@@ -1,25 +1,30 @@
 <script setup lang="ts">
-    // const connection = new signalR.HubConnectionBuilder()
-    //     .withUrl("/quizHub")
-    //     .configureLogging(signalR.LogLevel.Information)
-    //     .build();
+    import * as signalR from "@microsoft/signalr";
 
-    // async function start() {
-    //     try {
-    //         await connection.start();
-    //         console.log("SignalR Connected.");
-    //     } catch (err) {
-    //         console.log(err);
-    //         setTimeout(start, 5000);
-    //     }
-    // };
+    const connection = new signalR.HubConnectionBuilder()
+        // .withUrl("wss://localhost:7052/quizHub")
+        .withUrl("wss://localhost:7052/quizHub", {
+            skipNegotiation: true,
+            transport: signalR.HttpTransportType.WebSockets
+        })
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
 
-    // connection.onclose(async () => {
-    //     await start();
-    // });
+    async function start() {
+        try {
+            await connection.start();
+            console.log("SignalR Connected.");
+        } catch (err) {
+            console.log(err);
+            setTimeout(start, 5000);
+        }
+    };
 
-    // // Start the connection.
-    // start();
+    connection.onclose(async () => {
+        await start();
+    });
+
+    start();
 </script>
 
 <template>
