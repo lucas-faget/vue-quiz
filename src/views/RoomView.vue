@@ -14,11 +14,21 @@
         try {
             await connection.start();
             console.log("SignalR Connected.");
+
+            try {
+                await connection.invoke("JoinRoom", 0, "");
+            } catch (err) {
+                console.error("Failed to join room:", err);
+            }
         } catch (err) {
             console.log(err);
             setTimeout(start, 5000);
         }
     };
+
+    connection.on("ReceiveMessage", (message) => {
+        console.log(message);
+    });
 
     connection.onclose(async () => {
         await start();
