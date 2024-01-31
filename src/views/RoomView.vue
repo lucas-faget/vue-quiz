@@ -3,7 +3,7 @@
     import * as signalR from "@microsoft/signalr";
 
     const chat = ref([]);
-    const quiz = ref([]);
+    const question = ref({});
 
     const connection = new signalR.HubConnectionBuilder()
         // .withUrl("wss://localhost:7052/quizHub")
@@ -21,7 +21,6 @@
 
             try {
                 await connection.invoke("JoinRoom", 0, "");
-                await connection.invoke("GetQuestions", 0);
             } catch (err) {
                 console.error("Failed to join room:", err);
             }
@@ -36,9 +35,13 @@
         chat.value.push(message);
     });
     
-    connection.on("ReceiveQuestions", (questions) => {
-        console.log(questions);
-        quiz.value = questions;
+    connection.on("ReceiveQuestion", (q) => {
+        console.log(q);
+        question.value = q;
+    });
+
+    connection.on("ReceiveAnswerResult", (answerResult) => {
+        console.log(answerResult);
     });
 
     connection.onclose(async () => {
@@ -56,7 +59,7 @@
             <div>{{ message }}</div>
         </div>
         <h2>Quiz</h2>
-        <div class="quiz" v-for="question in quiz" :key="question.id">
+        <div class="question">
             <div v-if="question.difficulty">{{ question.difficulty }}</div>
             <div v-if="question.category">{{ question.category }}</div>
             <div v-if="question.title">{{ question.title }}</div>
