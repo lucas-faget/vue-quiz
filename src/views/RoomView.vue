@@ -2,6 +2,7 @@
     import { ref } from 'vue';
     import * as signalR from "@microsoft/signalr";
 
+    const players = ref([]);
     const chat = ref([]);
     const question = ref({});
 
@@ -29,6 +30,11 @@
             setTimeout(start, 5000);
         }
     };
+
+    connection.on("ReceivePlayers", (playerList) => {
+        console.log(playerList);
+        players.value = playerList;
+    });
     
     connection.on("ReceiveMessage", (message) => {
         console.log(message);
@@ -54,6 +60,10 @@
 <template>
     <main>
         <h1>Room</h1>
+        <h2>Player List</h2>
+        <div class="players" v-for="player in players" :key="player.id">
+            <div>{{ player.name }}</div>
+        </div>
         <h2>Chat</h2>
         <div class="chat" v-for="(message, index) in chat" :key="index">
             <div>{{ message }}</div>
