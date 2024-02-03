@@ -1,22 +1,18 @@
 <script setup lang="ts">
-    import { onBeforeUnmount, onMounted, ref } from 'vue';
+    import { onBeforeUnmount, ref } from 'vue';
 
-    const props = defineProps({
-        seconds: {
-            type: Number,
-            default: 0
-        }
-    });
+    let remainingSeconds = ref<number>(0);
 
-    const seconds = ref(props.seconds);
     let intervalId: number|undefined;
     let layerWidth: string = '0%';
 
-    const startCountdown = () => {
+    const startCountdown = (seconds: number) => {
+        seconds = Math.round(seconds);
+        remainingSeconds.value = seconds;
         intervalId = setInterval(() => {
-            if (seconds.value > 0) {
-                seconds.value--;
-                const remainingPercentage = (seconds.value / props.seconds) * 100;
+            if (remainingSeconds.value > 0) {
+                remainingSeconds.value--;
+                let remainingPercentage = (remainingSeconds.value / seconds) * 100;
                 layerWidth = `${100 - remainingPercentage}%`;
             } else {
                 stopCountdown();
@@ -28,19 +24,26 @@
         clearInterval(intervalId);
     };
 
-    onMounted(() => {
-        startCountdown();
-    });
+    const restartCountdown = (seconds: number) => {
+        stopCountdown();
+        startCountdown(seconds);
+    };
 
     onBeforeUnmount(() => {
         stopCountdown();
+    });
+
+    defineExpose({
+        startCountdown,
+        stopCountdown,
+        restartCountdown
     });
 </script>
 
 <template>
     <div class="container">
         <div class="layer" :style="{ width: layerWidth }"></div>
-        <div class="number">{{ seconds }}</div>
+        <div class="number">{{ remainingSeconds }}</div>
     </div>
 </template>
 

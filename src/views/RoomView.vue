@@ -1,18 +1,21 @@
 <script setup lang="ts">
     import { ref } from 'vue';
+    import type { Player } from '@/types/Player';
+    import type { Question } from '@/types/Question';
     import * as signalR from "@microsoft/signalr";
     import Countdown from '@/components/Countdown.vue';
 
-    const players = ref([]);
-    const chat = ref([]);
-    const question = ref({});
-    const canAnswer = ref(false);
-    const userAnswer = ref("");
-    const result = ref("");
-    const answer = ref("");
+    const countdown = ref(null);
+
+    const players = ref<Player[]>([]);
+    const chat = ref<string[]>([]);
+    const question = ref<Question|undefined>(undefined);
+    const canAnswer = ref<boolean>(false);
+    const userAnswer = ref<string>("");
+    const result = ref<string>("");
+    const answer = ref<string>("");
 
     const connection = new signalR.HubConnectionBuilder()
-        // .withUrl("wss://localhost:7052/quizHub")
         .withUrl("wss://localhost:7052/quizHub", {
             skipNegotiation: true,
             transport: signalR.HttpTransportType.WebSockets
@@ -37,8 +40,9 @@
     };
 
     async function sendAnswer() {
-        if (canAnswer.value) {
+        if (canAnswer.value && question.value) {
             try {
+                console.log("check answer");
                 await connection.invoke("CheckAnswer", 0, question.value.id, userAnswer.value);
             } catch (err) {
                 console.log("Failed to send answer:", err);
@@ -52,16 +56,24 @@
         console.log(playerList);
         players.value = playerList;
     });
-    
+
     connection.on("ReceiveMessage", (message) => {
         console.log(message);
         chat.value.push(message);
     });
+
+    connection.on("ReceiveDelay", (seconds) => {
+        handleRestartCountdown(seconds);
+    });
     
-    connection.on("ReceiveQuestion", (q) => {
+    
+    connection.on("ReceiveQuestion", (q, seconds) => {
         console.log(q);
         canAnswer.value = true;
+        answer.value = "";
+        result.value = '';
         question.value = q;
+        handleRestartCountdown(seconds);
     });
 
     connection.on("ReceiveAnswerResult", (answerResult) => {
@@ -79,6 +91,12 @@
         await start();
     });
 
+    const handleRestartCountdown = (seconds: number) => {
+        if (countdown.value) {
+            countdown.value.restartCountdown(seconds);
+        }
+    };
+
     start();
 </script>
 
@@ -94,15 +112,15 @@
             <div>{{ message }}</div>
         </div>
         <h2>Quiz</h2>
-        <countdown :seconds=20></countdown>
-        <div class="question">
+        <countdown ref="countdown"></countdown>
+        <div class="question" v-if="question">
             <div v-if="question.difficulty">{{ question.difficulty }}</div>
             <div v-if="question.category">{{ question.category }}</div>
             <div v-if="question.title">{{ question.title }}</div>
         </div>
         <input type="text" v-model="userAnswer" />
         <button @click="sendAnswer">Send</button>
-        <div>{{ result == '1' ? "Right" : "Wrong"  }}</div>
+        <div>{{ result == '1' ? "Right" : result == '0' ? "Wrong" : "" }}</div>
         <div v-if="answer">{{ answer  }}</div>
     </main>
 </template>
