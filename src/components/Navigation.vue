@@ -1,28 +1,38 @@
 <script setup lang="ts">
     import { ref, computed } from 'vue';
 
+    export type NavItem = {
+        text: string,
+        value: number|string
+    }
+
+    const props = defineProps({
+        items: Array<NavItem>
+    });
+
+    const emit = defineEmits(['updateAction']);
+
     let layerIndex = ref<number>(0);
 
     const layerLeft = computed(() => {
         return `${layerIndex.value * 150}px`;
-    })
+    });
 
-    const moveLayer = (linkIndex: number) => {
-        layerIndex.value = linkIndex;
-    }
+    const moveLayer = (itemIndex: number) => {
+        layerIndex.value = itemIndex;
+        if (props.items)
+            emit('updateAction', props.items[itemIndex].value);
+    };
 
     const textColor = (linkIndex: number) => {
         return layerIndex.value === linkIndex ? 'color-black' : 'color-light';
-    }
+    };
 </script>
 
 <template>
     <div class="navigation">
-        <div class="link" @click="moveLayer(0)">
-            <div class="text" :class="textColor(0)">Create</div>
-        </div>
-        <div class="link" @click="moveLayer(1)">
-            <div class="text" :class="textColor(1)">Join</div>
+        <div class="item" v-for="(item, index) in props.items" :key="index" @click="moveLayer(index)" >
+            <div class="text" :class="textColor(index)">{{ item.text }}</div>
         </div>
         <div class="layer" :style="{ left: layerLeft }"></div>
     </div>
@@ -40,7 +50,7 @@
         text-transform: capitalize;
     }
 
-    .link {
+    .item {
         width: 150px;
         padding-inline: 30px;
         display: flex;
