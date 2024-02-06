@@ -15,9 +15,9 @@
 		{ text: 'create', value: RoomAction.Create }
 	]
 
-	let roomAction = ref<RoomAction>(RoomAction.Join);
-	let playerName = ref<string>("");
-	let roomCode = ref<string>("");
+	const roomAction = ref<RoomAction>(RoomAction.Join);
+	const playerName = ref<string>("");
+	const roomCode = ref<string>("");
 
 	const updateRoomAction = (value: RoomAction) => {
 		roomAction.value = value;
@@ -26,12 +26,9 @@
 	const handleRoomAction = () => {
 		router.push({ 
 			name: 'room',
-			params: roomAction.value === RoomAction.Join ?
-			{ 
+			params: {
 				playerName: playerName.value,
-				roomCode: roomCode.value
-			} : {
-				playerName: playerName.value
+				...(roomAction.value === RoomAction.Join ? { roomCode: roomCode.value } : {})
 			}
 		});
 	};
@@ -45,7 +42,7 @@
 			<div style="display: flex; flex-direction: column; gap: 10px">
 				<div style="font-size: 40px;">Let's Play Quiz</div>
 				<div style="font-size: 16px;">
-					{{ roomAction === RoomAction.Join ? 
+					{{ roomAction === RoomAction.Join ?
 						"Enter your player name, enter the room code, then click on the button to join the room." : 
 						"Enter your player name, then click on the button to create a new room." }}
 				</div>
@@ -70,7 +67,6 @@
 	main {
 		display: flex;
 		justify-content: center;
-		align-items: center;
 	}
 
 	.form {
@@ -79,38 +75,5 @@
 		display: flex;
 		flex-direction: column;
 		gap: 30px;
-	}
-
-	.input-group {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-	}
-
-	.input-group > label {
-		color: var(--color-gray);
-	}
-
-	.input-group > input {
-		color: var(--color-white);
-		background-color: var(--color-dark-blue);
-		height: 50px;
-		padding-inline: 20px;
-		border-radius: 10px;
-		border: 2px solid var(--color-gray);
-		font-size: 16px;
-		outline: none;
-	}
-
-	button {
-		color: var(--color-dark-blue);
-		background: linear-gradient(to right, #178276, #52e0d0);
-		height: 50px;
-		border: none;
-		border-radius: 10px;
-		font-size: 15px;
-		text-transform: uppercase;
-		font-weight: bold;
-		cursor: pointer;
 	}
 </style>

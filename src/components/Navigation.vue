@@ -46,7 +46,7 @@
         height: 50px;
         display: flex;
         border-radius: 20px;
-        font-size: 18px;
+        font-size: 16px;
         text-transform: capitalize;
     }
 
@@ -71,6 +71,7 @@
 
     .text {
         position: absolute;
+        font-weight: bold;
         z-index: 2;
         transition: color 0.3s ease;
     }
