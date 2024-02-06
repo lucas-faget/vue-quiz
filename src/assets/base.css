@@ -95,11 +95,11 @@ body {
 	position: absolute;
 	top: 0;
 	right: 0;
-	height: 50px;
+	height: 100%;
+	aspect-ratio: 1/1;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	aspect-ratio: 1/1;
 	cursor: pointer;
 }
 

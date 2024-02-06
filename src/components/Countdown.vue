@@ -14,6 +14,7 @@
                 remainingSeconds.value--;
                 let remainingPercentage = (remainingSeconds.value / seconds) * 100;
                 layerWidth = `${100 - remainingPercentage}%`;
+                console.log(layerWidth)
             } else {
                 stopCountdown();
             }
@@ -41,36 +42,63 @@
 </script>
 
 <template>
-    <div class="container">
+    <div class="countdown">
         <div class="layer" :style="{ width: layerWidth }"></div>
         <div class="number">{{ remainingSeconds }}</div>
+        <div class="icon-container">
+            <img src="/icons/schedule.svg" />
+        </div>
     </div>
 </template>
 
-<style>
-    .container {
+<style scoped>
+    .countdown {
         position: relative;
-        width: 50px;
-        aspect-ratio: 1/1;
-        background-color: hsl(0,0%,20%);
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        background-color: var(--color-dark-blue);
+        height: 40px;
+        border-radius: 20px;
+        overflow: hidden;
     }
 
     .layer {
         position: absolute;
         top: 0;
         left: 0;
-        height: 100%;
-        background-color: hsl(0,0%,30%);
+        background: var(--color-linear-gradient-green);
+        width: 100%;
+        height: 40px;
+        border-radius: 20px;
         transition: width 1s linear;
         z-index: 1;
     }
 
     .number {
-        color: white;
-        font-size: 30px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        color: var(--color-white);
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
         z-index: 2;
+    }
+
+    .icon-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        aspect-ratio: 1/1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .icon-container > img {
+        width: 25px;
+        aspect-ratio: 1/1;
     }
 </style>
