@@ -14,7 +14,6 @@
                 remainingSeconds.value--;
                 let remainingPercentage = (remainingSeconds.value / seconds) * 100;
                 layerWidth = `${100 - remainingPercentage}%`;
-                console.log(layerWidth)
             } else {
                 stopCountdown();
             }
@@ -95,6 +94,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        z-index: 2;
     }
 
     .icon-container > img {

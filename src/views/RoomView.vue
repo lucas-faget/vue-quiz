@@ -3,8 +3,12 @@
     import type { Player } from '@/types/Player';
     import type { Message } from '@/types/Message';
     import type { Question } from '@/types/Question';
+    import type { AnswerAttempt } from '@/types/AnswerAttempt';
     import * as signalR from "@microsoft/signalr";
+    import Tag from '@/components/Tag.vue';
     import Countdown from '@/components/Countdown.vue';
+    import Answer from '@/components/Answer.vue';
+import { AnswerResult } from '@/types/AnswerResult';
 
     const props = defineProps<{
         playerName: string;
@@ -20,7 +24,7 @@
     const question = ref<Question|undefined>(undefined);
     const canAnswer = ref<boolean>(false);
     const userAnswer = ref<string>("");
-    const result = ref<string>("");
+    const answerAttempts = ref<AnswerAttempt[]>([]);
     const answer = ref<string>("");
     const countdown = ref(null);
 
@@ -65,12 +69,10 @@
     };
 
     connection.on("ReceivePlayers", (playerList) => {
-        console.log(playerList);
         players.value = playerList;
     });
 
     connection.on("ReceiveMessage", (content, author?) => {
-        console.log(content);
         chat.value.push({
             author,
             content
@@ -83,21 +85,28 @@
     
     
     connection.on("ReceiveQuestion", (q, seconds) => {
-        console.log(q);
         canAnswer.value = true;
         answer.value = "";
-        result.value = '';
+        answerAttempts.value = [];
         question.value = q;
         handleRestartCountdown(seconds);
     });
 
     connection.on("ReceiveAnswerResult", (answerResult) => {
-        console.log(answerResult);
-        result.value = answerResult;
+        if (answerAttempts.value.length < 3) {
+            answerAttempts.value.push({
+                text: userAnswer.value,
+                result: answerResult
+            });
+            if (answerResult === AnswerResult.Right) {
+                canAnswer.value = false;
+            }
+        } else {
+            canAnswer.value = false;
+        }
     });
 
     connection.on("ReceiveAnswer", (a) => {
-        console.log(a);
         canAnswer.value = false;
         answer.value = a;
     });
@@ -114,12 +123,14 @@
             });
             await sendUserMessage(userMessage.value);
         }
+        userMessage.value = "";
     }
 
     const handleUserAnswerSending = async () => {
         if (canAnswer.value && question.value) {
             await sendAnswer(question.value.id, userAnswer.value);
         }
+        userAnswer.value = "";
     }
 
     const handleRestartCountdown = (seconds: number) => {
@@ -147,13 +158,25 @@
             <section>
                 <div class="section-header">question</div>
                 <div class="section-content">
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="color-gray">
+                            <div style="background-color: var(--color-dark-blue); padding: 10px 20px; border-radius: 10px;">
+                                <span style="font-size: 25px;">Question 1</span>
+                                <span style="margin-left: 5px;">/20</span>
+                            </div>
+                        </div>
+                        <div v-if="question" style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="background-color: var(--color-dark-blue); padding: 10px 20px; border-radius: 10px;">
+                                <div v-if="question.category">{{ question.category }}</div>
+                            </div>
+                            <tag v-if="question.difficulty" :text="question.difficulty"></tag>
+                        </div>
+                    </div>
                     <countdown ref="countdown"></countdown>
-                    <div v-if="question">
-                        <div v-if="question.difficulty">{{ question.difficulty }}</div>
-                        <div v-if="question.category">{{ question.category }}</div>
-                        <div v-if="question.title">{{ question.title }}</div>
-                        <div>{{ result == '1' ? "Right" : result == '0' ? "Wrong" : "" }}</div>
-                        <div v-if="answer">{{ answer  }}</div>
+                    <div v-if="question" style="font-size: 16px;">{{ question.title }}</div>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div v-if="answer" class="answer">{{ answer  }}</div>
+                        <answer v-for="(answerAttempt, index) in answerAttempts" :key="index" :answerAttempt="answerAttempt"></answer>
                     </div>
                     <div class="input-group">
                         <input type="text" v-model="userAnswer" @keyup.enter="handleUserAnswerSending" />
@@ -192,7 +215,7 @@
     }
 
     .board {
-		margin-top: 5vw;
+		margin-top: 20px;
 		display: flex;
         align-items: flex-start;
 		gap: 30px;
@@ -212,7 +235,7 @@
         position: relative;
         background-color: var(--color-blue);
         width: 300px;
-        min-height: 500px;
+        min-height: 600px;
         margin-top: calc(var(--section-header-height) / 2);
         display: flex;
         flex-direction: column;
@@ -248,11 +271,21 @@
         padding-inline: 20px;
         display: flex;
         flex-direction: column;
-        gap: 30px;
+        gap: 20px;
     }
 
     .section-content > .input-group {
         margin-top: auto;
+    }
+
+    .answer {
+        background-color: var(--color-right);
+        height: 40px;
+        padding-inline: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 10px;
     }
 
     .message {

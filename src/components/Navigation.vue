@@ -6,9 +6,9 @@
         value: number|string
     }
 
-    const props = defineProps({
-        items: Array<NavItem>
-    });
+    const props = defineProps<{
+        items: NavItem[]
+    }>();
 
     const emit = defineEmits(['updateAction']);
 

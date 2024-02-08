@@ -6,6 +6,8 @@
 	--color-blue: #272f4d;
 	--color-dark-blue: #232943;
 	--color-linear-gradient-green: linear-gradient(to right, #178276, #52e0d0);
+	--color-wrong: red;
+	--color-right: #43A047;
 
 	--section-header-width: 150px;
 	--section-header-height: 50px;
