@@ -24,13 +24,16 @@
 	};
 
 	const handleRoomAction = () => {
-		router.push({ 
-			name: 'room',
-			params: {
-				playerName: playerName.value,
-				...(roomAction.value === RoomAction.Join ? { roomCode: roomCode.value } : {})
-			}
-		});
+		if (roomAction.value === RoomAction.Join) {
+			router.push({ 
+				name: 'room',
+				params: { code: roomCode.value }
+			});
+		} else {
+			router.push({ 
+				name: 'room'
+			});
+		}
 	};
 </script>
 

@@ -1,22 +1,20 @@
 <script setup lang="ts">
     import { ref } from 'vue';
+    import { useRoute, useRouter } from 'vue-router';
     import type { Player } from '@/types/Player';
     import type { Message } from '@/types/Message';
     import type { Question } from '@/types/Question';
+    import { AnswerResult } from '@/types/AnswerResult';
     import type { AnswerAttempt } from '@/types/AnswerAttempt';
     import * as signalR from "@microsoft/signalr";
     import Tag from '@/components/Tag.vue';
     import Countdown from '@/components/Countdown.vue';
     import Answer from '@/components/Answer.vue';
-import { AnswerResult } from '@/types/AnswerResult';
 
-    const props = defineProps<{
-        playerName: string;
-        roomCode?: string;
-    }>();
+    const route = useRoute();
+    const router = useRouter();
 
-    console.log(props);
-
+    const roomCode = ref<string|undefined>(undefined);
     const playerName = ref<string>("Me");
     const players = ref<Player[]>([]);
     const userMessage = ref<string>("");
@@ -26,7 +24,12 @@ import { AnswerResult } from '@/types/AnswerResult';
     const userAnswer = ref<string>("");
     const answerAttempts = ref<AnswerAttempt[]>([]);
     const answer = ref<string>("");
-    const countdown = ref(null);
+    const countdown = ref<any>(null);
+
+    const isValidCode = (code: string): boolean => {
+        return /^[A-Z0-9]{4}$/.test(code);
+    };
+
 
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("wss://localhost:7052/quizHub", {
@@ -41,14 +44,41 @@ import { AnswerResult } from '@/types/AnswerResult';
             await connection.start();
             console.log("SignalR Connected.");
 
-            try {
-                await connection.invoke("JoinRoom", 0, "");
-            } catch (err) {
-                console.error("Failed to join room:", err);
+            if (route.params.code === undefined) {
+                createRoom();
+            } else {
+                if (isValidCode(route.params.code as string)) {
+                    const roomExists = await connection.invoke("RoomExists", route.params.code);
+                    if (roomExists) {
+                        joinRoom(route.params.code as string);
+                        roomCode.value = route.params.code as string;
+                    } else {
+                        router.push({ name: 'home' });
+                    }
+                } else {
+                    router.push({ name: 'home' });
+                }
             }
         } catch (err) {
             console.log(err);
             setTimeout(start, 5000);
+        }
+    };
+
+    async function createRoom(playerName: string = "") {
+        try {
+            const code: string = await connection.invoke("CreateRoom", playerName);
+            roomCode.value = code;
+        } catch (err) {
+            console.error("Failed to create room:", err);
+        }
+    };
+
+    async function joinRoom(code: string, playerName: string = "") {
+        try {
+            await connection.invoke("JoinRoom", code, playerName);
+        } catch (err) {
+            console.error("Failed to join room:", err);
         }
     };
 
@@ -60,13 +90,17 @@ import { AnswerResult } from '@/types/AnswerResult';
         }
     };
 
-    async function sendAnswer(questionId: number, userAnswer: string) {
+    async function sendAnswer(roomCode: string, questionId: number, userAnswer: string) {
         try {
-            await connection.invoke("CheckAnswer", 0, questionId, userAnswer);
+            await connection.invoke("CheckAnswer", roomCode, questionId, userAnswer);
         } catch (err) {
             console.log("Failed to send answer:", err);
         }
     };
+
+    connection.on("ReceivePlayers", (playerList) => {
+        players.value = playerList;
+    });
 
     connection.on("ReceivePlayers", (playerList) => {
         players.value = playerList;
@@ -111,10 +145,6 @@ import { AnswerResult } from '@/types/AnswerResult';
         answer.value = a;
     });
 
-    connection.onclose(async () => {
-        await start();
-    });
-
     const handleMessageSending = async () => {
         if (/\S/.test(userMessage.value)) {
             chat.value.push({
@@ -127,8 +157,8 @@ import { AnswerResult } from '@/types/AnswerResult';
     }
 
     const handleUserAnswerSending = async () => {
-        if (canAnswer.value && question.value) {
-            await sendAnswer(question.value.id, userAnswer.value);
+        if (roomCode.value && canAnswer.value && question.value) {
+            await sendAnswer(roomCode.value, question.value.id ,userAnswer.value);
         }
         userAnswer.value = "";
     }

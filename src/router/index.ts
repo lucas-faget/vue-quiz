@@ -11,10 +11,9 @@ const router = createRouter({
 			component: HomeView
 		},
 		{
-			path: '/room',
+			path: '/room/:code?',
 			name: 'room',
-			component: RoomView,
-			props: true
+			component: RoomView
 			// component: () => import('../views/RoomView.vue')
 		}
 	]
