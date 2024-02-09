@@ -19,6 +19,8 @@
     const players = ref<Player[]>([]);
     const userMessage = ref<string>("");
     const chat = ref<Message[]>([]);
+    const questionNumber = ref<number>(0);
+    const maxQuestionNumber = ref<number>(0);
     const question = ref<Question|undefined>(undefined);
     const canAnswer = ref<boolean>(false);
     const userAnswer = ref<string>("");
@@ -118,10 +120,12 @@
     });
     
     
-    connection.on("ReceiveQuestion", (q, seconds) => {
-        canAnswer.value = true;
+    connection.on("ReceiveQuestion", (q, seconds, number, maxNumber) => {
         answer.value = "";
         answerAttempts.value = [];
+        questionNumber.value = number;
+        maxQuestionNumber.value = maxNumber;
+        canAnswer.value = true;
         question.value = q;
         handleRestartCountdown(seconds);
     });
@@ -157,7 +161,7 @@
     }
 
     const handleUserAnswerSending = async () => {
-        if (roomCode.value && canAnswer.value && question.value) {
+        if (roomCode.value && canAnswer.value && question.value && /\S/.test(userAnswer.value)) {
             await sendAnswer(roomCode.value, question.value.id ,userAnswer.value);
         }
         userAnswer.value = "";
@@ -191,8 +195,8 @@
                     <div style="display: flex; flex-direction: column; gap: 10px;">
                         <div class="color-gray">
                             <div style="background-color: var(--color-dark-blue); padding: 10px 20px; border-radius: 10px;">
-                                <span style="font-size: 25px;">Question 1</span>
-                                <span style="margin-left: 5px;">/20</span>
+                                <span style="font-size: 25px;">Question {{ questionNumber }}</span>
+                                <span style="margin-left: 5px;">/{{ maxQuestionNumber }}</span>
                             </div>
                         </div>
                         <div v-if="question" style="display: flex; justify-content: space-between; align-items: center;">
