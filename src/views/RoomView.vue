@@ -47,12 +47,15 @@
             console.log("SignalR Connected.");
 
             if (route.params.code === undefined) {
-                createRoom();
+                await createRoom();
+                if (roomCode.value) {
+                    await startGame(roomCode.value);
+                }
             } else {
                 if (isValidCode(route.params.code as string)) {
                     const roomExists = await connection.invoke("RoomExists", route.params.code);
                     if (roomExists) {
-                        joinRoom(route.params.code as string);
+                        await joinRoom(route.params.code as string);
                         roomCode.value = route.params.code as string;
                     } else {
                         router.push({ name: 'home' });
@@ -81,6 +84,14 @@
             await connection.invoke("JoinRoom", code, playerName);
         } catch (err) {
             console.error("Failed to join room:", err);
+        }
+    };
+
+    async function startGame(code: string) {
+        try {
+            await connection.invoke("StartGame", code);
+        } catch (err) {
+            console.error("Failed to start game:", err);
         }
     };
 
