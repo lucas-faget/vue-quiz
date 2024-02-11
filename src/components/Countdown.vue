@@ -1,23 +1,27 @@
 <script setup lang="ts">
     import { onBeforeUnmount, ref } from 'vue';
 
+    const transitionTimeInSeconds = 1;
     let remainingSeconds = ref<number>(0);
-
     let intervalId: number|undefined;
     let layerWidth: string = '0%';
 
     const startCountdown = (seconds: number) => {
         seconds = Math.round(seconds);
         remainingSeconds.value = seconds;
+        calculateLayerWidth(remainingSeconds.value, seconds);
         intervalId = setInterval(() => {
             if (remainingSeconds.value > 0) {
-                remainingSeconds.value--;
-                let remainingPercentage = (remainingSeconds.value / seconds) * 100;
-                layerWidth = `${100 - remainingPercentage}%`;
+                calculateLayerWidth(--remainingSeconds.value, seconds)
             } else {
                 stopCountdown();
             }
         }, 1000);
+    };
+
+    const calculateLayerWidth = (seconds: number, totalSeconds: number) => {
+        let percentage = 100 - ((seconds - transitionTimeInSeconds) / totalSeconds) * 100;
+        layerWidth = `${percentage}%`;
     };
 
     const stopCountdown = () => {
