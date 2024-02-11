@@ -1,12 +1,12 @@
 <script setup lang="ts">
-    import { ref } from 'vue';
+    import * as quizHub from '@/signalr/QuizHubClient';
+    import { ref, onMounted, onBeforeUnmount } from 'vue';
     import { useRoute, useRouter } from 'vue-router';
     import type { Player } from '@/types/Player';
     import type { Message } from '@/types/Message';
     import type { Question } from '@/types/Question';
     import { AnswerResult } from '@/types/AnswerResult';
     import type { AnswerAttempt } from '@/types/AnswerAttempt';
-    import * as signalR from "@microsoft/signalr";
     import Tag from '@/components/Tag.vue';
     import Countdown from '@/components/Countdown.vue';
     import Answer from '@/components/Answer.vue';
@@ -32,106 +32,26 @@
         return /^[A-Z0-9]{4}$/.test(code);
     };
 
-
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("wss://localhost:7052/quizHub", {
-            skipNegotiation: true,
-            transport: signalR.HttpTransportType.WebSockets
-        })
-        .configureLogging(signalR.LogLevel.Information)
-        .build();
-
-    async function start() {
-        try {
-            await connection.start();
-            console.log("SignalR Connected.");
-
-            if (route.params.code === undefined) {
-                await createRoom();
-                if (roomCode.value) {
-                    await startGame(roomCode.value);
-                }
-            } else {
-                if (isValidCode(route.params.code as string)) {
-                    const roomExists = await connection.invoke("RoomExists", route.params.code);
-                    if (roomExists) {
-                        await joinRoom(route.params.code as string);
-                        roomCode.value = route.params.code as string;
-                    } else {
-                        router.push({ name: 'home' });
-                    }
-                } else {
-                    router.push({ name: 'home' });
-                }
-            }
-        } catch (err) {
-            console.log(err);
-            setTimeout(start, 5000);
-        }
-    };
-
-    async function createRoom(playerName: string = "") {
-        try {
-            const code: string = await connection.invoke("CreateRoom", playerName);
-            roomCode.value = code;
-        } catch (err) {
-            console.error("Failed to create room:", err);
-        }
-    };
-
-    async function joinRoom(code: string, playerName: string = "") {
-        try {
-            await connection.invoke("JoinRoom", code, playerName);
-        } catch (err) {
-            console.error("Failed to join room:", err);
-        }
-    };
-
-    async function startGame(code: string) {
-        try {
-            await connection.invoke("StartGame", code);
-        } catch (err) {
-            console.error("Failed to start game:", err);
-        }
-    };
-
-    async function sendUserMessage(message: string) {
-        try {
-            await connection.invoke("SendUserMessage", 0, message);
-        } catch (err) {
-            console.log("Failed to send message:", err);
-        }
-    };
-
-    async function sendAnswer(roomCode: string, questionId: number, userAnswer: string) {
-        try {
-            await connection.invoke("CheckAnswer", roomCode, questionId, userAnswer);
-        } catch (err) {
-            console.log("Failed to send answer:", err);
-        }
-    };
-
-    connection.on("ReceivePlayers", (playerList) => {
+    quizHub.connection.on("ReceivePlayers", (playerList: Player[]) => {
         players.value = playerList;
     });
 
-    connection.on("ReceivePlayers", (playerList) => {
+    quizHub.connection.on("ReceivePlayers", (playerList: Player[]) => {
         players.value = playerList;
     });
 
-    connection.on("ReceiveMessage", (content, author?) => {
+    quizHub.connection.on("ReceiveMessage", (content: string, author?: string) => {
         chat.value.push({
             author,
             content
         });
     });
 
-    connection.on("ReceiveDelay", (seconds) => {
+    quizHub.connection.on("ReceiveDelay", (seconds: number) => {
         handleRestartCountdown(seconds);
     });
     
-    
-    connection.on("ReceiveQuestion", (q, seconds, number, maxNumber) => {
+    quizHub.connection.on("ReceiveQuestion", (q: Question, seconds: number, number: number, maxNumber: number) => {
         answer.value = "";
         answerAttempts.value = [];
         questionNumber.value = number;
@@ -141,7 +61,7 @@
         handleRestartCountdown(seconds);
     });
 
-    connection.on("ReceiveAnswerResult", (answerResult) => {
+    quizHub.connection.on("ReceiveAnswerResult", (answerResult: AnswerResult) => {
         if (answerAttempts.value.length < 3) {
             answerAttempts.value.push({
                 text: userAnswer.value,
@@ -155,25 +75,25 @@
         }
     });
 
-    connection.on("ReceiveAnswer", (a) => {
+    quizHub.connection.on("ReceiveAnswer", (a: string) => {
         canAnswer.value = false;
         answer.value = a;
     });
 
     const handleMessageSending = async () => {
-        if (/\S/.test(userMessage.value)) {
+        if (roomCode.value && /\S/.test(userMessage.value)) {
             chat.value.push({
                 author: playerName.value,
                 content: userMessage.value
             });
-            await sendUserMessage(userMessage.value);
+            await quizHub.sendUserMessage(roomCode.value, userMessage.value);
         }
         userMessage.value = "";
     }
 
     const handleUserAnswerSending = async () => {
         if (roomCode.value && canAnswer.value && question.value && /\S/.test(userAnswer.value)) {
-            await sendAnswer(roomCode.value, question.value.id ,userAnswer.value);
+            await quizHub.sendAnswer(roomCode.value, question.value.id ,userAnswer.value);
         }
         userAnswer.value = "";
     }
@@ -184,7 +104,34 @@
         }
     };
 
-    start();
+    onMounted(async () => {
+        await quizHub.startConnection();
+
+        if (route.params.code === undefined) {
+            const code: string|undefined = await quizHub.createRoom();
+            console.log(code);
+            if (code) {
+                roomCode.value = code;
+                await quizHub.startGame(code);
+            }
+        } else {
+            if (isValidCode(route.params.code as string)) {
+                const roomExists = await quizHub.connection.invoke("RoomExists", route.params.code);
+                if (roomExists) {
+                    await quizHub.joinRoom(route.params.code as string);
+                    roomCode.value = route.params.code as string;
+                } else {
+                    router.push({ name: 'home' });
+                }
+            } else {
+                router.push({ name: 'home' });
+            }
+        }
+    });
+
+    onBeforeUnmount(async () => {
+        await quizHub.stopConnection();
+    });
 </script>
 
 <template>
