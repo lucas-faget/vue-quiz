@@ -6,6 +6,11 @@
     let intervalId: number|undefined;
     let layerWidth: string = '0%';
 
+    const calculateLayerWidth = (seconds: number, totalSeconds: number) => {
+        let percentage = 100 - ((seconds - transitionTimeInSeconds) / totalSeconds) * 100;
+        layerWidth = `${percentage}%`;
+    };
+
     const startCountdown = (seconds: number) => {
         seconds = Math.round(seconds);
         remainingSeconds.value = seconds;
@@ -17,11 +22,6 @@
                 stopCountdown();
             }
         }, 1000);
-    };
-
-    const calculateLayerWidth = (seconds: number, totalSeconds: number) => {
-        let percentage = 100 - ((seconds - transitionTimeInSeconds) / totalSeconds) * 100;
-        layerWidth = `${percentage}%`;
     };
 
     const stopCountdown = () => {

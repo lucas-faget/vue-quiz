@@ -1,8 +1,8 @@
 <script setup lang="ts">
-    import * as quizHub from '@/signalr/QuizHubClient';
-    import { ref, onMounted, onBeforeUnmount } from 'vue';
+    import { ref, onBeforeMount, onBeforeUnmount } from 'vue';
     import { useStore } from 'vuex';
     import { useRoute, useRouter } from 'vue-router';
+    import { buildConnection, startConnection, stopConnection, createRoom, joinRoom, sendUserMessage, startGame, sendAnswer } from '@/signalr/QuizHubClient';
     import type { Player } from '@/types/Player';
     import type { Message } from '@/types/Message';
     import type { Question } from '@/types/Question';
@@ -15,6 +15,8 @@
     const store = useStore();
     const route = useRoute();
     const router = useRouter();
+
+    const game: signalR.HubConnection = buildConnection();
 
     const roomCode = ref<string|undefined>(undefined);
     const playerName = ref<string>(store.state.playerName);
@@ -30,30 +32,26 @@
     const answer = ref<string>("");
     const countdown = ref<any>(null);
 
-    const isValidCode = (code: string): boolean => {
-        return /^[A-Z0-9]{4}$/.test(code);
-    };
-
-    quizHub.connection.on("ReceivePlayers", (playerList: Player[]) => {
+    store.state.connection.on("ReceivePlayers", (playerList: Player[]) => {
         players.value = playerList;
     });
 
-    quizHub.connection.on("ReceivePlayers", (playerList: Player[]) => {
+    store.state.connection.on("ReceivePlayers", (playerList: Player[]) => {
         players.value = playerList;
     });
 
-    quizHub.connection.on("ReceiveMessage", (content: string, author?: string) => {
+    store.state.connection.on("ReceiveMessage", (content: string, author?: string) => {
         chat.value.push({
             author,
             content
         });
     });
 
-    quizHub.connection.on("ReceiveDelay", (seconds: number) => {
+    store.state.connection.on("ReceiveDelay", (seconds: number) => {
         handleRestartCountdown(seconds);
     });
     
-    quizHub.connection.on("ReceiveQuestion", (q: Question, seconds: number, number: number, maxNumber: number) => {
+    store.state.connection.on("ReceiveQuestion", (q: Question, seconds: number, number: number, maxNumber: number) => {
         answer.value = "";
         answerAttempts.value = [];
         questionNumber.value = number;
@@ -63,7 +61,7 @@
         handleRestartCountdown(seconds);
     });
 
-    quizHub.connection.on("ReceiveAnswerResult", (answerResult: AnswerResult) => {
+    store.state.connection.on("ReceiveAnswerResult", (answerResult: AnswerResult) => {
         if (answerAttempts.value.length < 3) {
             answerAttempts.value.push({
                 text: userAnswer.value,
@@ -77,7 +75,7 @@
         }
     });
 
-    quizHub.connection.on("ReceiveAnswer", (a: string) => {
+    store.state.connection.on("ReceiveAnswer", (a: string) => {
         canAnswer.value = false;
         answer.value = a;
     });
@@ -88,14 +86,14 @@
                 author: playerName.value,
                 content: userMessage.value
             });
-            await quizHub.sendUserMessage(roomCode.value, userMessage.value);
+            await sendUserMessage(store.state.connection, roomCode.value, userMessage.value);
         }
         userMessage.value = "";
     }
 
     const handleUserAnswerSending = async () => {
         if (roomCode.value && canAnswer.value && question.value && /\S/.test(userAnswer.value)) {
-            await quizHub.sendAnswer(roomCode.value, question.value.id ,userAnswer.value);
+            await sendAnswer(store.state.connection, roomCode.value, question.value.id ,userAnswer.value);
         }
         userAnswer.value = "";
     }
@@ -106,33 +104,24 @@
         }
     };
 
-    onMounted(async () => {
-        await quizHub.startConnection();
+    onBeforeMount(async () => {
+        await startConnection(store.state.connection);
 
         if (route.params.code === undefined) {
-            const code: string|undefined = await quizHub.createRoom(playerName.value);
+            const code: string|undefined = await createRoom(store.state.connection, playerName.value);
             console.log(code);
             if (code) {
                 roomCode.value = code;
-                await quizHub.startGame(code);
+                await startGame(game, code);
             }
         } else {
-            if (isValidCode(route.params.code as string)) {
-                const roomExists = await quizHub.connection.invoke("RoomExists", route.params.code);
-                if (roomExists) {
-                    roomCode.value = route.params.code as string;
-                    await quizHub.joinRoom(roomCode.value, playerName.value);
-                } else {
-                    router.push({ name: 'home' });
-                }
-            } else {
-                router.push({ name: 'home' });
-            }
+            roomCode.value = route.params.code as string;
+            await joinRoom(store.state.connection, roomCode.value, playerName.value);
         }
     });
 
     onBeforeUnmount(async () => {
-        await quizHub.stopConnection();
+        await stopConnection(store.state.connection);
     });
 </script>
 

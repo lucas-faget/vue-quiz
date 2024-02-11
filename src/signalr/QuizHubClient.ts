@@ -10,20 +10,17 @@ export const buildConnection = () => new signalR.HubConnectionBuilder()
     .configureLogging(signalR.LogLevel.Information)
     .build();
 
-export const connection = buildConnection();
-export const game = buildConnection();
-
-export async function startConnection() {
+export async function startConnection(connection: signalR.HubConnection) {
     await connection.start();
     console.log("SignalR Connected.");
 };
 
-export async function stopConnection() {
+export async function stopConnection(connection: signalR.HubConnection) {
     await connection.stop();
     console.log("SignalR Disconnected.");
 };
 
-export async function createRoom(playerName: string = ""): Promise<string|undefined> {
+export async function createRoom(connection: signalR.HubConnection, playerName: string = ""): Promise<string|undefined> {
     try {
         return await connection.invoke("CreateRoom", playerName);
     } catch (err) {
@@ -31,7 +28,7 @@ export async function createRoom(playerName: string = ""): Promise<string|undefi
     }
 };
 
-export async function joinRoom(code: string, playerName: string = "") {
+export async function joinRoom(connection: signalR.HubConnection,code: string, playerName: string = "") {
     try {
         await connection.invoke("JoinRoom", code, playerName);
     } catch (err) {
@@ -39,28 +36,28 @@ export async function joinRoom(code: string, playerName: string = "") {
     }
 };
 
-export async function startGame(code: string) {
+export async function startGame(connection: signalR.HubConnection, code: string) {
     try {
-        await game.start();
-        await game.invoke("StartGame", code);
-        await game.stop();
+        await connection.start();
+        await connection.invoke("StartGame", code);
+        await connection.stop();
     } catch (err) {
         console.error("Failed to start game:", err);
     }
 };
 
-export async function sendUserMessage(roomCode: string, message: string) {
+export async function sendUserMessage(connection: signalR.HubConnection, roomCode: string, message: string) {
     try {
         await connection.invoke("SendUserMessage", roomCode, message);
     } catch (err) {
-        console.log("Failed to send message:", err);
+        console.error("Failed to send message:", err);
     }
 };
 
-export async function sendAnswer(roomCode: string, questionId: number, userAnswer: string) {
+export async function sendAnswer(connection: signalR.HubConnection, roomCode: string, questionId: number, userAnswer: string) {
     try {
         await connection.invoke("CheckAnswer", roomCode, questionId, userAnswer);
     } catch (err) {
-        console.log("Failed to send answer:", err);
+        console.error("Failed to send answer:", err);
     }
 };
