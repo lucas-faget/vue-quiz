@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import * as quizHub from '@/signalr/QuizHubClient';
     import { ref, onMounted, onBeforeUnmount } from 'vue';
+    import { useStore } from 'vuex';
     import { useRoute, useRouter } from 'vue-router';
     import type { Player } from '@/types/Player';
     import type { Message } from '@/types/Message';
@@ -11,11 +12,12 @@
     import Countdown from '@/components/Countdown.vue';
     import Answer from '@/components/Answer.vue';
 
+    const store = useStore();
     const route = useRoute();
     const router = useRouter();
 
     const roomCode = ref<string|undefined>(undefined);
-    const playerName = ref<string>("Me");
+    const playerName = ref<string>(store.state.playerName);
     const players = ref<Player[]>([]);
     const userMessage = ref<string>("");
     const chat = ref<Message[]>([]);
@@ -108,7 +110,7 @@
         await quizHub.startConnection();
 
         if (route.params.code === undefined) {
-            const code: string|undefined = await quizHub.createRoom();
+            const code: string|undefined = await quizHub.createRoom(playerName.value);
             console.log(code);
             if (code) {
                 roomCode.value = code;
@@ -118,8 +120,8 @@
             if (isValidCode(route.params.code as string)) {
                 const roomExists = await quizHub.connection.invoke("RoomExists", route.params.code);
                 if (roomExists) {
-                    await quizHub.joinRoom(route.params.code as string);
                     roomCode.value = route.params.code as string;
+                    await quizHub.joinRoom(roomCode.value, playerName.value);
                 } else {
                     router.push({ name: 'home' });
                 }
@@ -182,8 +184,8 @@
                 <div class="section-header">chat</div>
                 <div class="section-content">
                     <div class="messages">
-                        <div class="message" v-for="(message, index) in chat" :key="index">
-                            <span class="color-gray" v-if="message.author">{{ message.author }}</span>
+                        <div v-for="(message, index) in chat" :key="index">
+                            <span class="color-gray" style="margin-right: 10px;" v-if="message.author">{{ message.author }}</span>
                             <span v-if="message.content">{{ message.content }}</span>
                         </div>
                     </div>
@@ -278,10 +280,5 @@
         align-items: center;
         gap: 10px;
         border-radius: 10px;
-    }
-
-    .message {
-        display: flex;
-        gap: 10px;
     }
 </style>

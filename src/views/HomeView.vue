@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { ref } from 'vue';
+	import { useStore } from 'vuex';
 	import { useRouter } from 'vue-router';
 	import Navigation, { type NavItem } from '@/components/Navigation.vue';
 
@@ -8,6 +9,7 @@
 		Create
 	}
 
+	const store = useStore();
 	const router = useRouter();
 
 	const items: NavItem[] = [
@@ -16,7 +18,7 @@
 	]
 
 	const roomAction = ref<RoomAction>(RoomAction.Join);
-	const playerName = ref<string>("");
+	const playerName = ref<string>(store.state.playerName ?? '');
 	const roomCode = ref<string>("");
 
 	const updateRoomAction = (value: RoomAction) => {
@@ -24,6 +26,7 @@
 	};
 
 	const handleRoomAction = () => {
+		store.commit('setPlayerName', playerName.value);
 		if (roomAction.value === RoomAction.Join) {
 			router.push({ 
 				name: 'room',
