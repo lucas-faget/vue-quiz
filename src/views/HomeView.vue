@@ -2,12 +2,8 @@
 	import { ref } from 'vue';
 	import { useStore } from 'vuex';
 	import { useRouter } from 'vue-router';
+	import { RoomAction } from '@/types/RoomAction';
 	import Navigation, { type NavItem } from '@/components/Navigation.vue';
-
-	enum RoomAction {
-		Join,
-		Create
-	}
 
 	const store = useStore();
 	const router = useRouter();
@@ -53,18 +49,19 @@
 						"Enter your player name, then click on the button to create a new room." }}
 				</div>
 			</div>
+			<form style="display: flex; flex-direction: column; gap: 30px" @submit.prevent="handleRoomAction">
+				<div class="input-group">
+					<label>Player Name</label>
+					<input type="text" minlength="3" maxlength="12" v-model="playerName" required />
+				</div>
 
-			<div class="input-group">
-				<label>Player Name</label>
-				<input type="text" v-model="playerName" />
-			</div>
+				<div class="input-group" v-if="roomAction === RoomAction.Join">
+					<label>Room Code</label>
+					<input type="text" maxlength="4" pattern="[a-zA-Z0-9]{4}" v-model="roomCode" required />
+				</div>
 
-			<div class="input-group" v-if="roomAction === RoomAction.Join">
-				<label>Room Code</label>
-				<input type="text" v-model="roomCode" />
-			</div>
-
-			<button @click="handleRoomAction">{{ roomAction === RoomAction.Join ? "join room" : "create a room" }}</button>
+				<button>{{ roomAction === RoomAction.Join ? "join room" : "create a room" }}</button>
+			</form>
 		</div>
 	</main>
 </template>

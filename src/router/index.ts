@@ -25,6 +25,7 @@ const router = createRouter({
 				if (to.params.code === undefined) {
 					next();
 				} else {
+					to.params.code = (to.params.code as string).toUpperCase();
 					if (isValidCode(to.params.code as string)) {
 						await startConnection(store.state.connection);
 						const roomExists = await store.state.connection.invoke("RoomExists", to.params.code);

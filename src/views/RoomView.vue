@@ -1,8 +1,8 @@
 <script setup lang="ts">
     import { ref, onBeforeMount, onBeforeUnmount } from 'vue';
     import { useStore } from 'vuex';
-    import { useRoute, useRouter } from 'vue-router';
-    import { buildConnection, startConnection, stopConnection, createRoom, joinRoom, sendUserMessage, startGame, sendAnswer } from '@/signalr/QuizHubClient';
+    import { useRoute } from 'vue-router';
+    import { startConnection, stopConnection, createRoom, joinRoom, sendUserMessage, startGame, sendAnswer, buildConnection } from '@/signalr/QuizHubClient';
     import type { Player } from '@/types/Player';
     import type { Message } from '@/types/Message';
     import type { Question } from '@/types/Question';
@@ -14,9 +14,6 @@
 
     const store = useStore();
     const route = useRoute();
-    const router = useRouter();
-
-    const game: signalR.HubConnection = buildConnection();
 
     const roomCode = ref<string|undefined>(undefined);
     const playerName = ref<string>(store.state.playerName);
@@ -89,14 +86,14 @@
             await sendUserMessage(store.state.connection, roomCode.value, userMessage.value);
         }
         userMessage.value = "";
-    }
+    };
 
     const handleUserAnswerSending = async () => {
         if (roomCode.value && canAnswer.value && question.value && /\S/.test(userAnswer.value)) {
             await sendAnswer(store.state.connection, roomCode.value, question.value.id ,userAnswer.value);
         }
         userAnswer.value = "";
-    }
+    };
 
     const handleRestartCountdown = (seconds: number) => {
         if (countdown.value) {
@@ -112,6 +109,7 @@
             console.log(code);
             if (code) {
                 roomCode.value = code;
+                const game = buildConnection();
                 await startGame(game, code);
             }
         } else {
