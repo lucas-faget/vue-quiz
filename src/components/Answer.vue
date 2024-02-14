@@ -13,6 +13,11 @@
         <div>{{ answerTry.text }}</div>
     </div>
 
+    <div v-else-if="answerTry.result === AnswerResult.AlmostRight" class="answer-try almost-right-answer">
+        <img src="/icons/almost-right.svg" alt="almost right answer"/>
+        <div>{{ answerTry.text }}</div>
+    </div>
+
     <div v-else class="answer-try wrong-answer">
         <img src="/icons/wrong.svg" alt="wrong answer"/>
         <div>{{ answerTry.text }}</div>
@@ -32,6 +37,10 @@
 
     .wrong-answer {
         border: 2px solid var(--color-wrong);
+    }
+
+    .almost-right-answer {
+        border: 2px solid var(--color-almost-right);
     }
 
     .right-answer {
