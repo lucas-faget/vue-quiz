@@ -43,7 +43,7 @@
 
 			<div style="display: flex; flex-direction: column; gap: 10px">
 				<div style="font-size: 40px;">Let's Play Quiz</div>
-				<div style="font-size: 16px;">
+				<div>
 					{{ roomAction === RoomAction.Join ?
 						"Enter your player name, enter the room code, then click on the button to join the room." : 
 						"Enter your player name, then click on the button to create a new room." }}

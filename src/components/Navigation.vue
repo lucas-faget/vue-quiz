@@ -46,7 +46,6 @@
         height: 50px;
         display: flex;
         border-radius: 20px;
-        font-size: 16px;
         text-transform: capitalize;
     }
 

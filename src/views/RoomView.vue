@@ -7,7 +7,8 @@
     import type { Message } from '@/types/Message';
     import type { Question } from '@/types/Question';
     import { AnswerResult } from '@/types/AnswerResult';
-    import type { AnswerAttempt } from '@/types/AnswerAttempt';
+    import type { AnswerTry } from '@/types/AnswerTry';
+    import PlayerScore from '@/components/PlayerScore.vue';
     import Tag from '@/components/Tag.vue';
     import Countdown from '@/components/Countdown.vue';
     import Answer from '@/components/Answer.vue';
@@ -25,16 +26,12 @@
     const question = ref<Question|undefined>(undefined);
     const canAnswer = ref<boolean>(false);
     const userAnswer = ref<string>("");
-    const answerAttempts = ref<AnswerAttempt[]>([]);
+    const answerTries = ref<AnswerTry[]>([]);
     const answer = ref<string>("");
     const countdown = ref<any>(null);
 
-    store.state.connection.on("ReceivePlayers", (playerList: Player[]) => {
-        players.value = playerList;
-    });
-
-    store.state.connection.on("ReceivePlayers", (playerList: Player[]) => {
-        players.value = playerList;
+    store.state.connection.on("ReceivePlayers", (playerScores: Player[]) => {
+        players.value = playerScores;
     });
 
     store.state.connection.on("ReceiveMessage", (content: string, author?: string) => {
@@ -50,7 +47,7 @@
     
     store.state.connection.on("ReceiveQuestion", (q: Question, seconds: number, number: number, maxNumber: number) => {
         answer.value = "";
-        answerAttempts.value = [];
+        answerTries.value = [];
         questionNumber.value = number;
         maxQuestionNumber.value = maxNumber;
         canAnswer.value = true;
@@ -59,8 +56,8 @@
     });
 
     store.state.connection.on("ReceiveAnswerResult", (answerResult: AnswerResult) => {
-        if (answerAttempts.value.length < 3) {
-            answerAttempts.value.push({
+        if (answerTries.value.length < 3) {
+            answerTries.value.push({
                 text: userAnswer.value,
                 result: answerResult
             });
@@ -130,9 +127,7 @@
                 <div class="section-header">players</div>
                 <div class="section-content">
                     <div>
-                        <div v-for="(player, index) in players" :key="index">
-                            {{ player.name }}
-                        </div>
+                        <player-score v-for="(player, index) in players" :key="index" :player="player"></player-score>
                     </div>
                 </div>
             </section>
@@ -154,10 +149,10 @@
                         </div>
                     </div>
                     <countdown ref="countdown"></countdown>
-                    <div v-if="question" style="font-size: 16px;">{{ question.title }}</div>
+                    <div v-if="question" style="font-size: 20px;">{{ question.title }}</div>
                     <div style="display: flex; flex-direction: column; gap: 10px;">
                         <div v-if="answer" class="answer">{{ answer  }}</div>
-                        <answer v-for="(answerAttempt, index) in answerAttempts" :key="index" :answerAttempt="answerAttempt"></answer>
+                        <answer v-for="(answerTry, index) in answerTries" :key="index" :answerTry="answerTry"></answer>
                     </div>
                     <div class="input-group">
                         <input type="text" v-model="userAnswer" @keyup.enter="handleUserAnswerSending" />

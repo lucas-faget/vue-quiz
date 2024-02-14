@@ -1,6 +1,6 @@
 import type { AnswerResult } from "./AnswerResult"
 
-export type AnswerAttempt = {
+export type AnswerTry = {
     text: string,
     result: AnswerResult
 }
