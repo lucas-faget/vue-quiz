@@ -17,7 +17,7 @@
                 <img v-if="player.score.order === 1" src="/icons/first.svg" alt="right answer" />
                 <img v-else-if="player.score.order === 2" src="/icons/second.svg" alt="right answer" />
                 <img v-else-if="player.score.order === 3" src="/icons/third.svg" alt="right answer" />
-                <img v-else="player.score?.hasAnsweredRight" src="/icons/right.svg" alt="right answer" />
+                <img v-else src="/icons/right.svg" alt="right answer" />
             </template>
             <span class="points">{{ player.totalPoints }}</span>
         </div>
