@@ -126,7 +126,7 @@
             <section>
                 <div class="section-header">players</div>
                 <div class="section-content">
-                    <div>
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
                         <player-score v-for="(player, index) in players" :key="index" :player="player"></player-score>
                     </div>
                 </div>
