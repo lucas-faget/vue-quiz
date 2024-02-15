@@ -126,7 +126,7 @@
             <section>
                 <div class="section-header">players</div>
                 <div class="section-content">
-                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <div class="player-scores scrollbar">
                         <player-score v-for="(player, index) in players" :key="index" :player="player"></player-score>
                     </div>
                 </div>
@@ -165,7 +165,7 @@
             <section>
                 <div class="section-header">chat</div>
                 <div class="section-content">
-                    <div class="messages">
+                    <div class="messages scrollbar">
                         <div v-for="(message, index) in chat" :key="index">
                             <span class="color-gray" style="margin-right: 10px;" v-if="message.author">{{ message.author }}</span>
                             <span v-if="message.content">{{ message.content }}</span>
@@ -252,6 +252,12 @@
 
     .section-content > .input-group {
         margin-top: auto;
+    }
+
+    .player-scores {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
     }
 
     .answer {
