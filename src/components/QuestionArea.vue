@@ -65,7 +65,8 @@
 
     .question-category {
         background-color: var(--color-dark-blue);
-        padding: 10px 20px;
+        padding-block: 10px;
+        padding-inline: 20px 10px;
         border-radius: 10px;
         display: flex;
         justify-content: space-between;
@@ -77,7 +78,7 @@
     }
 
     .answers {
-        min-height: 190px;
+        max-height: 190px;
         display: flex;
         flex-direction: column;
         gap: 10px;

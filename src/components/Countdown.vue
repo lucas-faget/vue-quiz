@@ -58,7 +58,7 @@
     .countdown {
         position: relative;
         background-color: var(--color-dark-blue);
-        height: 40px;
+        min-height: 35px;
         border-radius: 20px;
         overflow: hidden;
     }
@@ -69,7 +69,7 @@
         left: 0;
         background: var(--color-linear-gradient-green);
         width: 100%;
-        height: 40px;
+        height: 35px;
         border-radius: 20px;
         transition: width 1s linear;
         z-index: 1;

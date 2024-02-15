@@ -24,9 +24,9 @@
     const playerName = ref<string>(store.state.playerName);
     const players = ref<Player[]>([]);
     /* Question */
+    const countdown = ref<any>(null);
     const questionNumber = ref<number>(0);
     const maxQuestionNumber = ref<number>(0);
-    const countdown = ref<any>(null);
     const question = ref<Question|undefined>(undefined);
     const answer = ref<string>("");
     const canAnswer = ref<boolean>(false);
@@ -135,11 +135,12 @@
                     <player-scores :players="players"></player-scores>
                 </div>
             </section>
-            <section>
+            <section ref="questionSection">
                 <div class="section-header">question</div>
                 <div class="section-content">
                     <countdown ref="countdown"></countdown>
                     <question-area v-if="question"
+                        class="scrollbar"
                         :questionNumber="questionNumber"
                         :maxQuestionNumber="maxQuestionNumber"
                         :question="question"
@@ -195,6 +196,7 @@
         position: relative;
         background-color: var(--color-blue);
         width: 300px;
+        height: 600px;
         margin-top: calc(var(--section-header-height) / 2);
         display: flex;
         flex-direction: column;
