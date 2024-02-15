@@ -3,39 +3,45 @@
     import { useStore } from 'vuex';
     import { useRoute } from 'vue-router';
     import { startConnection, stopConnection, createRoom, joinRoom, sendUserMessage, startGame, sendAnswer, buildConnection } from '@/signalr/QuizHubClient';
+    /* Types */
     import type { Player } from '@/types/Player';
-    import type { Message } from '@/types/Message';
     import type { Question } from '@/types/Question';
     import { AnswerResult } from '@/types/AnswerResult';
     import type { AnswerTry } from '@/types/AnswerTry';
-    import PlayerScore from '@/components/PlayerScore.vue';
-    import Tag from '@/components/Tag.vue';
+    import type { Message } from '@/types/Message';
+    /* Components */
+    import PlayerScores from '@/components/PlayerScores.vue';
     import Countdown from '@/components/Countdown.vue';
-    import Answer from '@/components/Answer.vue';
+    import QuestionArea from '@/components/QuestionArea.vue';
+    import Chat from '@/components/Chat.vue';
 
     const store = useStore();
     const route = useRoute();
 
+    /* Room */
     const roomCode = ref<string|undefined>(undefined);
+    /* Players */
     const playerName = ref<string>(store.state.playerName);
     const players = ref<Player[]>([]);
-    const userMessage = ref<string>("");
-    const chat = ref<Message[]>([]);
+    /* Question */
     const questionNumber = ref<number>(0);
     const maxQuestionNumber = ref<number>(0);
+    const countdown = ref<any>(null);
     const question = ref<Question|undefined>(undefined);
+    const answer = ref<string>("");
     const canAnswer = ref<boolean>(false);
     const userAnswer = ref<string>("");
     const answerTries = ref<AnswerTry[]>([]);
-    const answer = ref<string>("");
-    const countdown = ref<any>(null);
+    /* Chat */
+    const userMessage = ref<string>("");
+    const messages = ref<Message[]>([]);
 
     store.state.connection.on("ReceivePlayers", (playerScores: Player[]) => {
         players.value = playerScores;
     });
 
     store.state.connection.on("ReceiveMessage", (content: string, author?: string) => {
-        chat.value.push({
+        messages.value.push({
             author,
             content
         });
@@ -76,7 +82,7 @@
 
     const handleMessageSending = async () => {
         if (roomCode.value && /\S/.test(userMessage.value)) {
-            chat.value.push({
+            messages.value.push({
                 author: playerName.value,
                 content: userMessage.value
             });
@@ -126,34 +132,20 @@
             <section>
                 <div class="section-header">players</div>
                 <div class="section-content">
-                    <div class="player-scores scrollbar">
-                        <player-score v-for="(player, index) in players" :key="index" :player="player"></player-score>
-                    </div>
+                    <player-scores :players="players"></player-scores>
                 </div>
             </section>
             <section>
                 <div class="section-header">question</div>
                 <div class="section-content">
-                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <div class="color-gray">
-                            <div style="background-color: var(--color-dark-blue); padding: 10px 20px; border-radius: 10px;">
-                                <span style="font-size: 25px;">Question {{ questionNumber }}</span>
-                                <span style="margin-left: 5px;">/{{ maxQuestionNumber }}</span>
-                            </div>
-                        </div>
-                        <div v-if="question" style="display: flex; justify-content: space-between; align-items: center;">
-                            <div style="background-color: var(--color-dark-blue); padding: 10px 20px; border-radius: 10px;">
-                                <div v-if="question.category">{{ question.category }}</div>
-                            </div>
-                            <tag v-if="question.difficulty" :text="question.difficulty"></tag>
-                        </div>
-                    </div>
                     <countdown ref="countdown"></countdown>
-                    <div v-if="question" style="font-size: 20px;">{{ question.title }}</div>
-                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <div v-if="answer" class="answer">{{ answer  }}</div>
-                        <answer v-for="(answerTry, index) in answerTries" :key="index" :answerTry="answerTry"></answer>
-                    </div>
+                    <question-area v-if="question"
+                        :questionNumber="questionNumber"
+                        :maxQuestionNumber="maxQuestionNumber"
+                        :question="question"
+                        :answer="answer"
+                        :answerTries="answerTries">
+                    </question-area>
                     <div class="input-group">
                         <input type="text" v-model="userAnswer" @keyup.enter="handleUserAnswerSending" />
                         <div class="icon-container" @click="handleUserAnswerSending">
@@ -165,12 +157,7 @@
             <section>
                 <div class="section-header">chat</div>
                 <div class="section-content">
-                    <div class="messages scrollbar">
-                        <div v-for="(message, index) in chat" :key="index">
-                            <span class="color-gray" style="margin-right: 10px;" v-if="message.author">{{ message.author }}</span>
-                            <span v-if="message.content">{{ message.content }}</span>
-                        </div>
-                    </div>
+                    <chat :messages="messages"></chat>
                     <div class="input-group">
                         <input type="text" v-model="userMessage" @keyup.enter="handleMessageSending" />
                         <div class="icon-container" @click="handleMessageSending">
@@ -185,18 +172,15 @@
 
 <style scoped>
     main {
-        min-height: 100vh;
         display: flex;
 		justify-content: center;
     }
 
     .board {
-		margin-top: 20px;
+		margin-block: 20px;
 		display: flex;
-        align-items: flex-start;
 		gap: 30px;
     }
-
     .board > section:nth-child(1) {
         width: 300px;
     }
@@ -211,7 +195,6 @@
         position: relative;
         background-color: var(--color-blue);
         width: 300px;
-        min-height: 600px;
         margin-top: calc(var(--section-header-height) / 2);
         display: flex;
         flex-direction: column;
@@ -240,7 +223,6 @@
     }
 
     .section-content {
-        position: absolute;
         width: 100%;
         height: 100%;
         padding-block: calc(var(--section-padding) / 2 + var(--section-header-height) / 2) 20px;
@@ -252,21 +234,5 @@
 
     .section-content > .input-group {
         margin-top: auto;
-    }
-
-    .player-scores {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-
-    .answer {
-        background-color: var(--color-right);
-        height: 40px;
-        padding-inline: 15px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        border-radius: 10px;
     }
 </style>
