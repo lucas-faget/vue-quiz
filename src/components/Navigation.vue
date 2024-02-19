@@ -41,7 +41,7 @@
 <style scoped>
     .navigation {
         position: relative;
-        background: var(--color-dark-gray);
+        background: var(--color-blue-gray);
         width: 300px;
         height: 50px;
         display: flex;

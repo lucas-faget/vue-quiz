@@ -12,13 +12,13 @@
 
 <style>
     .tag {
-        color: var(--color-black);
-        background: var(--color-gray);
-        height: 25px;
-        padding-inline: 10px;
+        color: var(--color-blue-gray);
+        background: var(--color-blue);
+        height: 30px;
+        padding-inline: 15px;
         display: flex;
         align-items: center;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: bold;
         border-radius: 20px;
     }

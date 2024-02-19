@@ -57,7 +57,7 @@
 <style scoped>
     .countdown {
         position: relative;
-        background-color: var(--color-dark-blue);
+        background-color: var(--color-darkest-blue);
         min-height: 35px;
         border-radius: 20px;
         overflow: hidden;
@@ -67,7 +67,7 @@
         position: absolute;
         top: 0;
         left: 0;
-        background: var(--color-linear-gradient-green);
+        background: var(--color-blue);
         width: 100%;
         height: 35px;
         border-radius: 20px;

@@ -26,7 +26,7 @@
 
 <style scoped>
     .answer-try {
-        background-color: var(--color-dark-blue);
+        background-color: var(--color-darkest-blue);
         height: 40px;
         padding-inline: 10px;
         display: flex;

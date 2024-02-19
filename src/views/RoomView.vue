@@ -130,40 +130,39 @@
     <main>
         <div class="board">
             <section>
-                <div class="section-header">players</div>
-                <div class="section-content">
-                    <player-scores :players="players"></player-scores>
+                <div class="section-header">
+                    <span class="title">Players</span>
+                    <div class="line"></div>
                 </div>
+                <player-scores :players="players"></player-scores>
             </section>
             <section ref="questionSection">
-                <div class="section-header">question</div>
-                <div class="section-content">
-                    <countdown ref="countdown"></countdown>
-                    <question-area v-if="question"
-                        class="scrollbar"
-                        :questionNumber="questionNumber"
-                        :maxQuestionNumber="maxQuestionNumber"
-                        :question="question"
-                        :answer="answer"
-                        :answerTries="answerTries">
-                    </question-area>
-                    <div class="input-group">
-                        <input type="text" v-model="userAnswer" @keyup.enter="handleUserAnswerSending" />
-                        <div class="icon-container" @click="handleUserAnswerSending">
-                            <img src="/icons/send.svg" />
-                        </div>
+                <countdown ref="countdown"></countdown>
+                <question-area v-if="question"
+                    class="scrollbar"
+                    :questionNumber="questionNumber"
+                    :maxQuestionNumber="maxQuestionNumber"
+                    :question="question"
+                    :answer="answer"
+                    :answerTries="answerTries">
+                </question-area>
+                <div class="input-group">
+                    <input type="text" v-model="userAnswer" @keyup.enter="handleUserAnswerSending" />
+                    <div class="icon-container" @click="handleUserAnswerSending">
+                        <img src="/icons/send.svg" />
                     </div>
                 </div>
             </section>
             <section>
-                <div class="section-header">chat</div>
-                <div class="section-content">
-                    <chat :messages="messages"></chat>
-                    <div class="input-group">
-                        <input type="text" v-model="userMessage" @keyup.enter="handleMessageSending" />
-                        <div class="icon-container" @click="handleMessageSending">
-                            <img src="/icons/send.svg" />
-                        </div>
+                <div class="section-header">
+                    <span class="title">Chat</span>
+                    <div class="line"></div>
+                </div>
+                <chat :messages="messages"></chat>
+                <div class="input-group">
+                    <input type="text" v-model="userMessage" @keyup.enter="handleMessageSending" />
+                    <div class="icon-container" @click="handleMessageSending">
+                        <img src="/icons/send.svg" />
                     </div>
                 </div>
             </section>
@@ -173,11 +172,14 @@
 
 <style scoped>
     main {
+        background-color: var(--color-darkest-blue);
+        min-height: 100vh;
         display: flex;
 		justify-content: center;
     }
 
     .board {
+        height: 650px;
 		margin-block: 20px;
 		display: flex;
 		gap: 30px;
@@ -189,52 +191,26 @@
         width: 500px;
     }
     .board > section:nth-child(3) {
-        width: 300px;
+        width: 400px;
     }
 
     section {
-        position: relative;
-        background-color: var(--color-blue);
-        width: 300px;
-        height: 600px;
-        margin-top: calc(var(--section-header-height) / 2);
+        background-color: var(--color-dark-blue);
+        height: 100%;
+        padding: 20px;
         display: flex;
         flex-direction: column;
         gap: 20px;
-        border-image: var(--color-linear-gradient-green) 1;
-        border-width: 3px;
-        border-style: solid;
+        border-radius: 20px;
     }
 
     .section-header {
-        position: absolute;
-        top: calc(var(--section-header-height) / -2);
-        left: calc(50% - calc(var(--section-header-width) / 2));
-        color: var(--color-dark-blue);
-        background: var(--color-linear-gradient-green);
-        width: 150px;
-        height: 50px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border: 5px solid var(--color-blue);
-        border-radius: 20px;
-        font-size: 15px;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-
-    .section-content {
-        width: 100%;
-        height: 100%;
-        padding-block: calc(var(--section-padding) / 2 + var(--section-header-height) / 2) 20px;
-        padding-inline: 20px;
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 15px;
     }
 
-    .section-content > .input-group {
+    section > .input-group {
         margin-top: auto;
     }
 </style>

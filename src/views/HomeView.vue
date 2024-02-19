@@ -68,6 +68,8 @@
 
 <style scoped>
 	main {
+		background-color: var(--color-dark-blue);
+        min-height: 100vh;
 		display: flex;
 		justify-content: center;
 	}
