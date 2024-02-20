@@ -11,7 +11,7 @@
 
 	--color-wrong: #DC143C;
 	--color-almost-right: #FFA500;
-	--color-right: #32CD32;
+	--color-right: #41A145;
 
 	--section-header-width: 150px;
 	--section-header-height: 50px;
@@ -32,18 +32,23 @@ body {
 	line-height: 1.6;
 	font-family: "Outfit", sans-serif;
 	font-size: 16px;
+	overflow-x: hidden;
 }
 
 .color-white {
 	color: var(--color-white)
 }
 
-.color-gray {
-	color: var(--color-gray)
-}
-
 .color-black {
 	color: var(--color-black)
+}
+
+.color-wrong {
+	color: var(--color-wrong);
+}
+
+.color-right {
+	color: var(--color-right);
 }
 
 .input-group {

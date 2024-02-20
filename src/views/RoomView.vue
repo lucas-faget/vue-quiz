@@ -185,7 +185,7 @@
 		gap: 30px;
     }
     .board > section:nth-child(1) {
-        width: 300px;
+        width: 400px;
     }
     .board > section:nth-child(2) {
         width: 500px;

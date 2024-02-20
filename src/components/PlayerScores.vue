@@ -11,13 +11,16 @@
         <table>
             <thead>
                 <tr>
+                    <th>Rank</th>
                     <th>Name</th>
                     <th>Result</th>
                     <th>Points</th>
+                    <th>▴/▾</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(player, index) in players" :key="index">
+                    <td>{{ player.rank }}</td>
                     <td>{{ player.name }}</td>
                     <td>
                         <div class="img-container">
@@ -30,6 +33,10 @@
                         </div>
                     </td>
                     <td>{{ player.totalPoints }}</td>
+                    <td>
+                        <span v-if="player.previousRank && player.previousRank < player.rank" class="color-wrong">▼</span>
+                        <span v-else-if="player.previousRank && player.previousRank > player.rank" class="color-right">▲</span>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -59,11 +66,11 @@
         color: var(--color-blue-gray);
     }
 
-    tr > th:first-child, td:first-child {
+    tr > th:nth-child(-n+2), td:nth-child(-n+2) {
         text-align: left;
     }
 
-    tr > th:not(:first-child), td:not(:first-child) {
+    tr > th:nth-child(n+3), td:nth-child(n+3) {
         text-align: right;
     }
 
