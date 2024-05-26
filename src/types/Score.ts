@@ -1,5 +1,5 @@
 export type Score = {
-    hasAnsweredRight: boolean,
-    points: number,
-    order?: number
-}
+    hasAnsweredRight: boolean;
+    points: number;
+    order?: number;
+};

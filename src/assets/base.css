@@ -1,111 +1,111 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 
 :root {
-	--color-white: hsl(0,0%,90%);
-	--color-black: hsl(0,0%,10%);
+    --color-white: hsl(0, 0%, 90%);
+    --color-black: hsl(0, 0%, 10%);
 
-	--color-blue: hsl(215, 50%, 70%);
-	--color-blue-gray: hsl(215, 32%, 27%);
-	--color-dark-blue: hsl(215, 50%, 15%);
-	--color-darkest-blue: hsl(215, 50%, 10%);
+    --color-blue: hsl(215, 50%, 70%);
+    --color-blue-gray: hsl(215, 32%, 27%);
+    --color-dark-blue: hsl(215, 50%, 15%);
+    --color-darkest-blue: hsl(215, 50%, 10%);
 
-	--color-wrong: #DC143C;
-	--color-almost-right: #FFA500;
-	--color-right: #41A145;
+    --color-wrong: #dc143c;
+    --color-almost-right: #ffa500;
+    --color-right: #41a145;
 
-	--section-header-width: 150px;
-	--section-header-height: 50px;
-	--section-padding: 30px;;
+    --section-header-width: 150px;
+    --section-header-height: 50px;
+    --section-padding: 30px;
 }
 
 *,
 *::before,
 *::after {
-	box-sizing: border-box;
-	margin: 0;
-	font-weight: normal;
+    box-sizing: border-box;
+    margin: 0;
+    font-weight: normal;
 }
 
 body {
-	min-height: 100vh;
-	color: var(--color-white);
-	line-height: 1.6;
-	font-family: "Outfit", sans-serif;
-	font-size: 16px;
-	overflow-x: hidden;
+    min-height: 100vh;
+    color: var(--color-white);
+    line-height: 1.6;
+    font-family: "Outfit", sans-serif;
+    font-size: 16px;
+    overflow-x: hidden;
 }
 
 .color-white {
-	color: var(--color-white)
+    color: var(--color-white);
 }
 
 .color-black {
-	color: var(--color-black)
+    color: var(--color-black);
 }
 
 .color-wrong {
-	color: var(--color-wrong);
+    color: var(--color-wrong);
 }
 
 .color-right {
-	color: var(--color-right);
+    color: var(--color-right);
 }
 
 .input-group {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .input-group > label {
-	color: var(--color-blue);
+    color: var(--color-blue);
 }
 
 .input-group > input {
-	color: var(--color-white);
-	background-color: var(--color-darkest-blue);
-	height: 50px;
-	padding-inline: 20px 50px;
-	border-radius: 10px;
-	border: 2px solid var(--color-blue-gray);
-	font-size: 16px;
-	outline: none;
+    color: var(--color-white);
+    background-color: var(--color-darkest-blue);
+    height: 50px;
+    padding-inline: 20px 50px;
+    border-radius: 10px;
+    border: 2px solid var(--color-blue-gray);
+    font-size: 16px;
+    outline: none;
 }
 
 .input-group > input:focus {
-	border: 2px solid var(--color-white);
+    border: 2px solid var(--color-white);
 }
 
 .input-group > .icon-container {
-	position: absolute;
-	top: 0;
-	right: 0;
-	height: 100%;
-	aspect-ratio: 1/1;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    aspect-ratio: 1/1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 
 button {
-	color: var(--color-darkest-blue);
-	background: var(--color-blue);
-	height: 50px;
-	border: none;
-	border-radius: 10px;
-	font-size: 15px;
-	text-transform: uppercase;
-	font-weight: bold;
-	cursor: pointer;
+    color: var(--color-darkest-blue);
+    background: var(--color-blue);
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .scrollbar {
-	padding-right: 15px;
-	overflow-x: hidden;
-	overflow-y: auto;
-	overflow-wrap: break-word;
+    padding-right: 15px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow-wrap: break-word;
 }
 
 .scrollbar::-webkit-scrollbar {
@@ -114,8 +114,7 @@ button {
 
 .scrollbar::-webkit-scrollbar-track {
     background-color: var(--color-darkest-blue);
-	border-radius: 6px;
-	
+    border-radius: 6px;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
@@ -128,12 +127,12 @@ button {
 }
 
 .title {
-	color: var(--color-blue);
-	font-size: 20px;
+    color: var(--color-blue);
+    font-size: 20px;
 }
 
 .line {
-	height: 1px;
-	width: 100%;
-	background-color: var(--color-blue-gray);
+    height: 1px;
+    width: 100%;
+    background-color: var(--color-blue-gray);
 }

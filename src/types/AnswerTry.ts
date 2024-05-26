@@ -1,6 +1,6 @@
-import type { AnswerResult } from "./AnswerResult"
+import type { AnswerResult } from "./AnswerResult";
 
 export type AnswerTry = {
-    text: string,
-    result: AnswerResult
-}
+    text: string;
+    result: AnswerResult;
+};

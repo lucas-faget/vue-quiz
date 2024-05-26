@@ -1,6 +1,6 @@
 export type Question = {
-    id: number,
-    category: string,
-    title: string,
-    difficulty?: string
-}
+    id: number;
+    category: string;
+    title: string;
+    difficulty?: string;
+};
