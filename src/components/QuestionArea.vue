@@ -31,11 +31,7 @@ defineProps<{
         <div class="question-title">{{ question.title }}</div>
         <div class="answers">
             <div class="answer" v-if="answer">{{ answer }}</div>
-            <answer
-                v-for="(answerTry, index) in answerTries"
-                :key="index"
-                :answerTry="answerTry"
-            ></answer>
+            <answer v-for="(answerTry, index) in answerTries" :key="index" :answerTry="answerTry"></answer>
         </div>
     </div>
 </template>

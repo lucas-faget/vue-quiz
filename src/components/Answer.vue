@@ -13,10 +13,7 @@ defineProps<{
         <div>{{ answerTry.text }}</div>
     </div>
 
-    <div
-        v-else-if="answerTry.result === AnswerResult.AlmostRight"
-        class="answer-try almost-right-answer"
-    >
+    <div v-else-if="answerTry.result === AnswerResult.AlmostRight" class="answer-try almost-right-answer">
         <img src="/icons/almost-right.svg" alt="almost right answer" />
         <div>{{ answerTry.text }}</div>
     </div>

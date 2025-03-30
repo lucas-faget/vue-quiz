@@ -25,35 +25,19 @@ defineProps<{
                     <td>
                         <div class="img-container">
                             <template v-if="player.score?.hasAnsweredRight">
-                                <img
-                                    v-if="player.score.order === 1"
-                                    src="/icons/first.svg"
-                                    alt="right answer"
-                                />
-                                <img
-                                    v-else-if="player.score.order === 2"
-                                    src="/icons/second.svg"
-                                    alt="right answer"
-                                />
-                                <img
-                                    v-else-if="player.score.order === 3"
-                                    src="/icons/third.svg"
-                                    alt="right answer"
-                                />
+                                <img v-if="player.score.order === 1" src="/icons/first.svg" alt="right answer" />
+                                <img v-else-if="player.score.order === 2" src="/icons/second.svg" alt="right answer" />
+                                <img v-else-if="player.score.order === 3" src="/icons/third.svg" alt="right answer" />
                                 <img v-else src="/icons/right.svg" alt="right answer" />
                             </template>
                         </div>
                     </td>
                     <td>{{ player.totalPoints }}</td>
                     <td>
-                        <span
-                            v-if="player.previousRank && player.previousRank < player.rank"
-                            class="color-wrong"
+                        <span v-if="player.previousRank && player.previousRank < player.rank" class="color-wrong"
                             >▼</span
                         >
-                        <span
-                            v-else-if="player.previousRank && player.previousRank > player.rank"
-                            class="color-right"
+                        <span v-else-if="player.previousRank && player.previousRank > player.rank" class="color-right"
                             >▲</span
                         >
                     </td>

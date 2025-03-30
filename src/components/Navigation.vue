@@ -30,12 +30,7 @@ const textColor = (linkIndex: number) => {
 
 <template>
     <div class="navigation">
-        <div
-            class="item"
-            v-for="(item, index) in props.items"
-            :key="index"
-            @click="moveLayer(index)"
-        >
+        <div class="item" v-for="(item, index) in props.items" :key="index" @click="moveLayer(index)">
             <div class="text" :class="textColor(index)">{{ item.text }}</div>
         </div>
         <div class="layer" :style="{ left: layerLeft }"></div>

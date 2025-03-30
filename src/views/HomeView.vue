@@ -51,10 +51,7 @@ const handleRoomAction = () => {
                     }}
                 </div>
             </div>
-            <form
-                style="display: flex; flex-direction: column; gap: 30px"
-                @submit.prevent="handleRoomAction"
-            >
+            <form style="display: flex; flex-direction: column; gap: 30px" @submit.prevent="handleRoomAction">
                 <div class="input-group">
                     <label>Player Name</label>
                     <input type="text" minlength="3" maxlength="12" v-model="playerName" required />
@@ -62,13 +59,7 @@ const handleRoomAction = () => {
 
                 <div class="input-group" v-if="roomAction === RoomAction.Join">
                     <label>Room Code</label>
-                    <input
-                        type="text"
-                        maxlength="4"
-                        pattern="[a-zA-Z0-9]{4}"
-                        v-model="roomCode"
-                        required
-                    />
+                    <input type="text" maxlength="4" pattern="[a-zA-Z0-9]{4}" v-model="roomCode" required />
                 </div>
 
                 <button>

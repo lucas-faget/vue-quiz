@@ -32,11 +32,7 @@ export async function createRoom(
     }
 }
 
-export async function joinRoom(
-    connection: signalR.HubConnection,
-    code: string,
-    playerName: string = ""
-) {
+export async function joinRoom(connection: signalR.HubConnection, code: string, playerName: string = "") {
     try {
         await connection.invoke("JoinRoom", code, playerName);
     } catch (err) {
@@ -54,11 +50,7 @@ export async function startGame(connection: signalR.HubConnection, code: string)
     }
 }
 
-export async function sendUserMessage(
-    connection: signalR.HubConnection,
-    roomCode: string,
-    message: string
-) {
+export async function sendUserMessage(connection: signalR.HubConnection, roomCode: string, message: string) {
     try {
         await connection.invoke("SendUserMessage", roomCode, message);
     } catch (err) {

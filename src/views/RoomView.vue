@@ -61,18 +61,15 @@ store.state.connection.on("ReceiveDelay", (seconds: number) => {
     handleRestartCountdown(seconds);
 });
 
-store.state.connection.on(
-    "ReceiveQuestion",
-    (q: Question, seconds: number, number: number, maxNumber: number) => {
-        answer.value = "";
-        answerTries.value = [];
-        questionNumber.value = number;
-        maxQuestionNumber.value = maxNumber;
-        canAnswer.value = true;
-        question.value = q;
-        handleRestartCountdown(seconds);
-    }
-);
+store.state.connection.on("ReceiveQuestion", (q: Question, seconds: number, number: number, maxNumber: number) => {
+    answer.value = "";
+    answerTries.value = [];
+    questionNumber.value = number;
+    maxQuestionNumber.value = maxNumber;
+    canAnswer.value = true;
+    question.value = q;
+    handleRestartCountdown(seconds);
+});
 
 store.state.connection.on("ReceiveAnswerResult", (answerResult: AnswerResult) => {
     if (answerTries.value.length < 3) {
@@ -106,12 +103,7 @@ const handleMessageSending = async () => {
 
 const handleUserAnswerSending = async () => {
     if (roomCode.value && canAnswer.value && question.value && /\S/.test(userAnswer.value)) {
-        await sendAnswer(
-            store.state.connection,
-            roomCode.value,
-            question.value.id,
-            userAnswer.value
-        );
+        await sendAnswer(store.state.connection, roomCode.value, question.value.id, userAnswer.value);
     }
     userAnswer.value = "";
 };
@@ -168,11 +160,7 @@ onBeforeUnmount(async () => {
                     >
                     </question-area>
                     <div class="input-group">
-                        <input
-                            type="text"
-                            v-model="userAnswer"
-                            @keyup.enter="handleUserAnswerSending"
-                        />
+                        <input type="text" v-model="userAnswer" @keyup.enter="handleUserAnswerSending" />
                         <div class="icon-container" @click="handleUserAnswerSending">
                             <img src="/icons/send.svg" />
                         </div>
@@ -185,11 +173,7 @@ onBeforeUnmount(async () => {
                     </div>
                     <chat :messages="messages"></chat>
                     <div class="input-group">
-                        <input
-                            type="text"
-                            v-model="userMessage"
-                            @keyup.enter="handleMessageSending"
-                        />
+                        <input type="text" v-model="userMessage" @keyup.enter="handleMessageSending" />
                         <div class="icon-container" @click="handleMessageSending">
                             <img src="/icons/send.svg" />
                         </div>
