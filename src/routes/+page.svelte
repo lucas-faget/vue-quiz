@@ -1,22 +1,15 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { RoomAction } from "$lib/types/RoomAction";
-    import { setPlayerName } from "$lib/stores/QuizStore";
+    import { store } from "$lib/stores/QuizStore";
     import { Tabs } from "bits-ui";
     import { Label } from "bits-ui";
     import { Button } from "bits-ui";
 
     let roomAction: RoomAction = $state(RoomAction.Join);
-    let playerName: string = $state("");
-    let roomCode: string = $state("");
 
     const handleRoomAction = () => {
-        setPlayerName(playerName);
-        if (roomAction === RoomAction.Join) {
-            goto(`/room/${roomCode}`);
-        } else {
-            goto("/room");
-        }
+        goto("/room");
     };
 </script>
 
@@ -62,7 +55,7 @@
                             name="player-name"
                             type="text"
                             placeholder="Enter your name..."
-                            bind:value={playerName}
+                            bind:value={$store.playerName}
                         />
                     </div>
                     <div class="flex w-full flex-col gap-1.5">
@@ -75,7 +68,7 @@
                             name="room-code"
                             type="text"
                             placeholder="Enter the room code..."
-                            bind:value={roomCode}
+                            bind:value={$store.roomCode}
                         />
                     </div>
                     <Button.Root
@@ -104,7 +97,7 @@
                             name="player-name"
                             type="text"
                             placeholder="Enter your name..."
-                            value={playerName}
+                            bind:value={$store.playerName}
                         />
                     </div>
                     <Button.Root
