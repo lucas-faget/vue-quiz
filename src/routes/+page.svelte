@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { RoomAction } from "$lib/types/RoomAction";
-    import { store } from "$lib/stores/QuizStore";
+    import { store } from "$lib/stores/QuizStore.svelte";
     import { Tabs } from "bits-ui";
     import { Label } from "bits-ui";
     import { Button } from "bits-ui";
@@ -31,7 +31,7 @@
                     name="player-name"
                     type="text"
                     placeholder="Enter your name..."
-                    bind:value={$store.playerName}
+                    bind:value={store.playerName}
                 />
             </div>
             {#if roomAction === RoomAction.Join}
@@ -45,7 +45,7 @@
                         name="room-code"
                         type="text"
                         placeholder="Enter the room code..."
-                        bind:value={$store.roomCode}
+                        bind:value={store.roomCode}
                     />
                 </div>
             {/if}
