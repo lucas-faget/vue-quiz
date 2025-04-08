@@ -1,6 +1,6 @@
 import type { PageLoad } from "./$types";
 import { redirect } from "@sveltejs/kit";
-import { store } from "$lib/stores/QuizStore.svelte";
+import { room } from "$lib/stores/room.svelte";
 import {
     buildConnection,
     createRoom,
@@ -15,32 +15,32 @@ const isValidPlayerName = (name: string): boolean => name.length >= 3;
 const isValidRoomCode = (code: string): boolean => /^[A-Z0-9]{4}$/.test(code);
 
 export const load: PageLoad = async ({ params, fetch }) => {
-    if (isValidPlayerName(store.playerName)) {
+    if (isValidPlayerName(room.playerName)) {
         if (browser) {
-            if (store.connection) {
-                await startConnection(store.connection);
+            if (room.connection) {
+                await startConnection(room.connection);
 
-                if (store.roomCode) {
-                    if (isValidRoomCode(store.roomCode)) {
-                        const roomExists = await store.connection.invoke<boolean>("RoomExists", store.roomCode);
+                if (room.roomCode) {
+                    if (isValidRoomCode(room.roomCode)) {
+                        const roomExists = await room.connection.invoke<boolean>("RoomExists", room.roomCode);
 
                         if (roomExists) {
-                            await joinRoom(store.connection, store.roomCode, store.playerName);
-                            return { props: { code: store.roomCode } };
+                            await joinRoom(room.connection, room.roomCode, room.playerName);
+                            return { props: { code: room.roomCode } };
                         }
                     }
                 } else {
-                    store.roomCode = await createRoom(store.connection, store.playerName);
-                    console.log(store.roomCode);
+                    room.roomCode = await createRoom(room.connection, room.playerName);
+                    console.log(room.roomCode);
 
-                    if (store.roomCode) {
+                    if (room.roomCode) {
                         const game = buildConnection();
-                        //await startGame(game, store.roomCode);
-                        return { props: { code: store.roomCode } };
+                        startGame(game, room.roomCode);
+                        return { props: { code: room.roomCode } };
                     }
                 }
 
-                await stopConnection(store.connection);
+                await stopConnection(room.connection);
             }
         }
     }
