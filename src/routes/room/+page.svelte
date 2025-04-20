@@ -6,6 +6,7 @@
     import Card from "$lib/components/Card.svelte";
     import Chat from "$lib/components/Chat.svelte";
     import Question from "$lib/components/Question.svelte";
+    import Leaderboard from "$lib/components/Leaderboard.svelte";
 
     onDestroy(() => {
         room.connection && stopConnection(room.connection);
@@ -16,25 +17,8 @@
 <main class="h-screen min-h-[40rem] flex flex-col justify-center items-center p-12">
     <div class="h-full flex gap-8 w-full max-w-7xl">
         <Card>
-            <h1 class="text-2xl">Players</h1>
-            <table class="text-left">
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Name</th>
-                        <th>Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {#each room.players as player}
-                        <tr>
-                            <td>{player.rank}</td>
-                            <td>{player.name}</td>
-                            <td>{player.totalPoints}</td>
-                        </tr>
-                    {/each}
-                </tbody>
-            </table>
+            <h1 class="text-2xl">Leaderboard</h1>
+            <Leaderboard />
         </Card>
         <Card>
             <Question />

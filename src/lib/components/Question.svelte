@@ -28,7 +28,7 @@
     iconClass: string = "text-green-600",
     answerClass: string = "bg-green-600"
 )}
-    <div class={`w-full h-9 px-1.5 text-xs rounded-lg border-2 ${answerClass} flex items-center gap-2`}>
+    <div class={`w-full h-10 px-1.5 rounded-lg border-2 ${answerClass} flex items-center gap-2`}>
         {#if icon}
             <iconify-icon {icon} class={`text-2xl ${iconClass}`}></iconify-icon>
         {/if}
