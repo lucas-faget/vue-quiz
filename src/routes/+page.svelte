@@ -26,7 +26,7 @@
                     Player Name
                 </Label.Root>
                 <input
-                    class="h-input rounded-input border-border-input bg-background text-foreground focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover data-invalid:border-destructive flex w-full select-none items-center border px-2 py-3 text-sm tracking-[0.01em]"
+                    class="h-input rounded-input border-border-input bg-background text-foreground focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover data-invalid:border-destructive flex w-full select-none items-center border-2 px-2 py-3 text-sm tracking-[0.01em]"
                     id="player-name"
                     name="player-name"
                     type="text"
@@ -40,7 +40,7 @@
                         Room Code
                     </Label.Root>
                     <input
-                        class="h-input rounded-input border-border-input bg-background text-foreground focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover data-invalid:border-destructive flex w-full select-none items-center border px-2 py-3 text-sm tracking-[0.01em]"
+                        class="h-input rounded-input border-border-input bg-background text-foreground focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover data-invalid:border-destructive flex w-full select-none items-center border-2 px-2 py-3 text-sm tracking-[0.01em]"
                         id="room-code"
                         name="room-code"
                         type="text"
@@ -50,7 +50,7 @@
                 </div>
             {/if}
             <Button.Root
-                class="rounded-input bg-dark text-background shadow-mini hover:bg-dark/95 inline-flex h-12 items-center justify-center px-[21px] text-[15px] font-semibold active:scale-[0.98] active:transition-all"
+                class="rounded-input bg-dark text-background hover:bg-dark/95 inline-flex h-12 items-center justify-center px-[21px] text-[15px] font-semibold active:scale-[0.98] active:transition-all"
             >
                 {buttonText}
             </Button.Root>
@@ -60,22 +60,19 @@
 
 <main class="flex flex-col justify-center items-center mt-20">
     <div class="w-full max-w-lg">
-        <Tabs.Root
-            bind:value={activeRoomAction}
-            class="rounded-card border-muted bg-background-alt shadow-card w-full border p-3"
-        >
+        <Tabs.Root bind:value={activeRoomAction} class="rounded-card bg-background-alt w-full p-3 border">
             <Tabs.List
-                class="rounded-9px bg-dark-10 shadow-mini-inset dark:bg-background grid w-full grid-cols-2 gap-1 p-1 text-sm font-semibold leading-[0.01em] dark:border dark:border-neutral-600/30"
+                class="border-2 rounded-2xl bg-dark-10 grid w-full grid-cols-2 gap-1 p-1 text-sm font-semibold leading-[0.01em]"
             >
                 <Tabs.Trigger
                     value={RoomAction.Join}
-                    class="data-[state=active]:shadow-mini dark:data-[state=active]:bg-muted h-8 rounded-[7px] bg-transparent py-2 data-[state=active]:bg-white"
+                    class="data-[state=active]:bg-foreground data-[state=active]:text-background h-10 rounded-xl bg-transparent py-2"
                 >
                     Join
                 </Tabs.Trigger>
                 <Tabs.Trigger
                     value={RoomAction.Create}
-                    class="data-[state=active]:shadow-mini dark:data-[state=active]:bg-muted h-8 rounded-[7px] bg-transparent py-2 data-[state=active]:bg-white"
+                    class="data-[state=active]:bg-foreground data-[state=active]:text-background h-10 rounded-xl bg-transparent py-2"
                 >
                     Create
                 </Tabs.Trigger>

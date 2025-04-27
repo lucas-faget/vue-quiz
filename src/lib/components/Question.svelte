@@ -13,12 +13,14 @@
         <div class="flex justify-between items-center">
             <span>{question.category}</span>
             <div
-                class="rounded-input border-dark-10 bg-background shadow-popover outline-hidden flex items-center justify-center border p-2 text-sm font-medium capitalize"
+                class="rounded-input bg-background outline-hidden flex items-center justify-center border p-2 text-sm font-medium capitalize"
             >
                 {question.difficulty}
             </div>
         </div>
-        <div class="bg-muted text-center py-6 px-4 rounded-2xl text-lg">{question.title}</div>
+        <div class="bg-background text-center py-6 px-4 rounded-2xl text-lg border border-dark-10">
+            {question.title}
+        </div>
     </div>
 {/snippet}
 
@@ -26,13 +28,13 @@
     text: string,
     icon: string | undefined = undefined,
     iconClass: string = "text-green-600",
-    answerClass: string = "bg-green-600"
+    answerClass: string = "bg-green-600 border-green-400 text-white"
 )}
-    <div class={`w-full h-10 px-1.5 rounded-lg border-2 ${answerClass} flex items-center gap-2`}>
+    <div class={`w-full h-10 pl-2.5 pr-1.5 rounded-lg border-2 ${answerClass} flex justify-between items-center gap-2`}>
+        <span>{text}</span>
         {#if icon}
             <iconify-icon {icon} class={`text-2xl ${iconClass}`}></iconify-icon>
         {/if}
-        <span>{text}</span>
     </div>
 {/snippet}
 
@@ -51,10 +53,10 @@
         aria-labelledby={labelId}
         value={countdown.percentage}
         max={100}
-        class="bg-dark-10 shadow-mini-inset relative h-4 w-full overflow-hidden rounded-full"
+        class="bg-dark-10 relative h-6 w-full overflow-hidden rounded-full border-2"
     >
         <div
-            class="bg-foreground shadow-mini-inset h-full w-full flex-1 rounded-full transition-all duration-1000 ease-linear"
+            class="bg-foreground h-full w-full flex-1 rounded-full transition-all duration-1000 ease-linear"
             style={`transform: translateX(-${countdown.percentage}%)`}
         ></div>
     </Progress.Root>
@@ -72,17 +74,22 @@
                         answerTry.text,
                         "mdi:check-circle",
                         "text-green-600",
-                        "bg-background border-green-600"
+                        "bg-green-100 border-green-600 text-green-600"
                     )}
                 {:else if answerTry.result === AnswerResult.AlmostRight}
                     {@render answer(
                         answerTry.text,
                         "mdi:alert-circle",
-                        "text-orange-300",
-                        "bg-background border-orange-300"
+                        "text-orange-600",
+                        "bg-orange-200 border-orange-600 text-orange-600"
                     )}
                 {:else}
-                    {@render answer(answerTry.text, "mdi:close-circle", "text-red-400", "bg-background border-red-400")}
+                    {@render answer(
+                        answerTry.text,
+                        "mdi:close-circle",
+                        "text-red-600",
+                        "bg-red-200 border-red-600 text-red-600"
+                    )}
                 {/if}
             {/each}
         {/if}

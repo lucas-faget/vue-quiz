@@ -24,22 +24,26 @@
             <Question />
             <div class="mt-auto">
                 <form onsubmit={handleUserAnswerSending}>
-                    <div class="relative">
+                    <div class="group relative">
                         <input
-                            class="h-input rounded-input border-border-input bg-background text-foreground focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover data-invalid:border-destructive flex w-full select-none items-center border px-2 py-3 text-sm tracking-[0.01em]"
+                            class="h-input rounded-input border-border-input bg-background text-foreground focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover data-invalid:border-destructive flex w-full select-none items-center border-2 px-2 py-3 text-sm tracking-[0.01em]"
                             id="user-message"
                             name="user-message"
                             type="text"
                             placeholder="Type your answer..."
                             bind:value={room.userAnswer}
                         />
-                        <button
+                        <div
                             class="absolute top-0 right-0 h-full aspect-square bg-transparent flex justify-center items-center"
-                            aria-label="send-answer"
-                            onclick={handleUserAnswerSending}
                         >
-                            <iconify-icon icon="mdi:send" class="text-2xl"></iconify-icon>
-                        </button>
+                            <button
+                                class="size-9 bg-transparent hover:bg-dark-10 text-muted-foreground hover:text-foreground group-focus-within:text-foreground rounded-lg flex justify-center items-center cursor-pointer"
+                                aria-label="send-answer"
+                                onclick={handleUserAnswerSending}
+                            >
+                                <iconify-icon icon="mdi:send" class="text-2xl"></iconify-icon>
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -49,22 +53,26 @@
             <Chat />
             <div class="mt-auto">
                 <form onsubmit={handleMessageSending}>
-                    <div class="relative">
+                    <div class="group relative">
                         <input
-                            class="pr-12 h-input rounded-input border-border-input bg-background text-foreground focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover data-invalid:border-destructive flex w-full select-none items-center border px-2 py-3 text-sm tracking-[0.01em]"
+                            class="pr-12 h-input rounded-input border-border-input bg-background text-foreground focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover data-invalid:border-destructive flex w-full select-none items-center border-2 px-2 py-3 text-sm tracking-[0.01em]"
                             id="user-message"
                             name="user-message"
                             type="text"
                             placeholder="Type something..."
                             bind:value={room.userMessage}
                         />
-                        <button
+                        <div
                             class="absolute top-0 right-0 h-full aspect-square bg-transparent flex justify-center items-center"
-                            aria-label="send-message"
-                            onclick={handleMessageSending}
                         >
-                            <iconify-icon icon="mdi:send" class="text-2xl"></iconify-icon>
-                        </button>
+                            <button
+                                class="size-9 bg-transparent hover:bg-dark-10 text-muted-foreground hover:text-foreground group-focus-within:text-foreground rounded-lg flex justify-center items-center cursor-pointer"
+                                aria-label="send-message"
+                                onclick={handleMessageSending}
+                            >
+                                <iconify-icon icon="mdi:send" class="text-2xl"></iconify-icon>
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>

@@ -24,7 +24,7 @@
                 <iconify-icon icon="mdi:check-circle" class="text-4xl text-green-600"></iconify-icon>
             {/if}
         {:else}
-            <div class="size-full rounded-full bg-background"></div>
+            <div class="size-full rounded-full bg-dark-10"></div>
         {/if}
     </div>
 {/snippet}
@@ -43,7 +43,7 @@
 
 <div class="flex flex-col gap-3">
     {#each room.players as player}
-        <div class="bg-muted py-4 px-4 rounded-2xl flex gap-4 items-center">
+        <div class="bg-background py-4 px-4 rounded-2xl flex gap-4 items-center border">
             <div class="flex-1 flex items-center gap-3 text-nowrap truncate">
                 <span class="text-2xl font-bold">{player.rank}</span>
                 <iconify-icon icon={getRandomAnimalEmoji()} class="text-4xl"></iconify-icon>
